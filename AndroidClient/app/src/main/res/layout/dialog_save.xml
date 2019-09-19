@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/default_padding">
+
+    <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            tools:text="@string/save_record"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:inputType="text"
+                android:hint="@string/name"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end">
+
+        <Button android:id="@+id/cancel_button"
+                style="?android:buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel"/>
+        <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/delete_button"
+                style="?android:buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete"
+                app:spinning_bar_color="@color/orange"
+        />
+        <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/save_button"
+                style="?android:buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                app:spinning_bar_color="@color/orange"
+        />
+    </LinearLayout>
+
+</LinearLayout>

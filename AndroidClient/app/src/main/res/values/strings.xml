@@ -1,0 +1,26 @@
+<resources>
+    <string name="ip_and_port" translatable="false">%s:%d</string>
+    <string name="ip_and_port_hint" translatable="false">http://192.168.10.34:8080</string>
+
+    <string name="app_name">Cams</string>
+    <string name="retry">Retry</string>
+    <string name="failed_to_load_data">Failed to load data</string>
+    <string name="add">Add</string>
+    <string name="save">Save</string>
+    <string name="name">Name</string>
+    <string name="ip" translatable="false">IP</string>
+    <string name="port">Port</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="cancel">Cancel</string>
+    <string name="welcome">Welcome</string>
+    <string name="enter_server_address">Enter server address:</string>
+    <string name="connect">Connect</string>
+    <string name="check_connection">Checking connection</string>
+    <string name="check_connection_success">Success</string>
+    <string name="check_connection_error">Can not connect to server</string>
+    <string name="save_record">Save record?</string>
+    <string name="delete_or_rename_record">Rename or delete record?</string>
+</resources>
