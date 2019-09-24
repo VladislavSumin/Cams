@@ -7,6 +7,15 @@ import java.nio.file.Paths
 object ConfigVerifierUtils {
     /**
      * Copy file from resources to project dir if not exist
+     * pair key - resource name
+     * pair value - project dir path
+     *
+     * @return true - if all resources exist, else false
+     */
+    fun copyFromResource(vararg configs: Pair<String, String>): Boolean = copyFromResource(configs.toMap())
+
+    /**
+     * Copy file from resources to project dir if not exist
      * map key - resource name
      * map value - project dir path
      *

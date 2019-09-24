@@ -8,7 +8,7 @@ buildscript {
 
     }
     dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.3.41"))
+        classpath(kotlin("gradle-plugin", version = "1.3.50"))
     }
 }
 
@@ -21,13 +21,13 @@ repositories {
 plugins {
     java
     id("org.jetbrains.kotlin.jvm") version "1.3.50"
-    id("org.springframework.boot") version "2.1.6.RELEASE"
+    id("org.springframework.boot") version "2.1.8.RELEASE"
 
     /**
      * Check plugin && library versions
      * Use task "dependencyUpdates" to check updates
      */
-    id("com.github.ben-manes.versions") version ("0.21.0")
+    id("com.github.ben-manes.versions") version ("0.25.0")
 }
 
 configure<JavaPluginConvention> {
@@ -52,7 +52,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-freemarker")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.10")
 
     //Database
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -74,7 +74,7 @@ tasks.named<DependencyUpdatesTask>("dependencyUpdates") {
         componentSelection {
             all {
                 // Disable alpha/beta library versions
-                val rejected = listOf("alpha", "beta", "rc", "cr", "m", "preview", "b", "ea").any { qualifier ->
+                val rejected = listOf("alpha", "beta", "rc", "cr", "m", "preview", "b", "ea", "pr").any { qualifier ->
                     candidate.version.matches(Regex("(?i).*[.-]$qualifier[.\\d-+]*"))
                 }
                 if (rejected) reject("Release candidate")
