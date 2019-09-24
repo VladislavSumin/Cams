@@ -1,0 +1,3 @@
+pFfmpegPath=ffmpeg/bin/
+pRecordPath=records/
+pTmpRecordPath=tmp/

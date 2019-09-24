@@ -1,0 +1,13 @@
+/.gradle/
+/.idea/
+/build/
+
+*.iml
+
+
+# Server local files
+application.properties
+database.mv.db
+/tmp/
+/records/
+/logs/
