@@ -2,22 +2,27 @@ package ru.vladislavsumin.cams.domain
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import ru.vladislavsumin.cams.api.RecourseNotFoundException
 import ru.vladislavsumin.cams.entity.Camera
 import ru.vladislavsumin.cams.entity.Record
 import ru.vladislavsumin.cams.repository.RecordRepository
+import ru.vladislavsumin.cams.utils.logger
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 
 @Service
-class RecordManager
-@Autowired constructor(
-    private val recordRepository: RecordRepository,
-    @Value("\${pRecordPath}") private val rootPath: String
+class RecordManager @Autowired constructor(
+        private val recordRepository: RecordRepository,
+        @Value("\${pRecordPath}") private val rootPath: String
 ) {
+    companion object {
+        private const val SAVE_TIME: Long = 90L * 24 * 60 * 60 * 1000
+        private val logger = logger<RecordManager>()
+    }
 
     init {
         Paths.get(rootPath).resolve("records").toFile().mkdirs()
@@ -26,21 +31,21 @@ class RecordManager
     fun add(record: Path, camera: Camera, timestamp: Long) {
         val size = record.toFile().length()
         val record1 = Record(
-            timestamp = timestamp,
-            fileSize = size,
-            camera = camera
+                timestamp = timestamp,
+                fileSize = size,
+                camera = camera
         )
         val save = recordRepository.save(record1)
-        Files.move(record, Paths.get(rootPath).resolve("records").resolve("${save.id}.mp4"))
+        Files.move(record, getPath(save.id))
     }
 
     fun getAll(): Iterable<Record> = recordRepository.findAll()
-        .sortedBy { it.timestamp }
-        .reversed() //TODO replace to sql sort
+            .sortedBy { it.timestamp }
+            .reversed() //TODO replace to sql sort
 
     fun getInterval(begin: Date, period: Long): Iterable<Record> {
         return getAll()
-            .filter { it.timestamp > begin.time && it.timestamp < begin.time + period }
+                .filter { it.timestamp > begin.time && it.timestamp < begin.time + period }
     }
 
     fun getPath(id: Long): Path {
@@ -61,5 +66,24 @@ class RecordManager
         val copy = record.get().copy(keepForever = false, name = null)
         recordRepository.save(copy)
         return copy
+    }
+
+    @Scheduled(fixedRate = 24 * 60 * 60 * 100, initialDelay = 5 * 60 * 1000)
+    fun clean() {
+        val timestamp = System.currentTimeMillis() - SAVE_TIME
+
+        val recordsToDelete = recordRepository.findAll()
+                .filter { !it.keepForever }
+                .filter { it.timestamp < timestamp }
+
+        logger.info("Find ${recordsToDelete.size} records to delete")
+
+        recordsToDelete.forEach {
+            val file = getPath(it.id).toFile()
+            if (file.delete()) {
+                recordRepository.delete(it)
+                logger.trace("Record $it, path $file deleted")
+            } else logger.warn("Can not delete file $file")
+        }
     }
 }
