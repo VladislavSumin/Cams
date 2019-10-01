@@ -48,6 +48,8 @@ apply {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
+    implementation(files("./../../NioSocketListener/build/libs/NioSocketListener.jar"))
+
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-freemarker")
