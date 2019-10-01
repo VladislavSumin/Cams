@@ -1,0 +1,15 @@
+[Unit]
+Description=Blynk server
+Wants=network-online.target mnt-cams.mount
+After=network-online.target mnt-cams.mount
+
+[Service]
+WorkingDirectory=/home/pi/cams
+ExecStart=/usr/bin/java -jar camsServer.jar
+User=pi
+Type=simple
+Restart=on-failure
+RestartSec=300
+
+[Install]
+WantedBy=multi-user.target
