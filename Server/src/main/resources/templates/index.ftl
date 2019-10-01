@@ -30,7 +30,7 @@
         </video>
     </div>
 </div>
-<script src="/static/js/main.js"></script>
+<script src="/js/main.js"></script>
 </body>
 
 </html>
