@@ -32,7 +32,7 @@
         </androidx.recyclerview.widget.RecyclerView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="end"
@@ -43,22 +43,36 @@
             android:id="@+id/calendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
             app:mcv_showOtherDates="all"
             app:mcv_selectionColor="#00F"
             />
-
-        <Button
-            android:id="@+id/button_clear_date_filter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Clear date filter" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkbox_only_saved"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Only saved" />
+            app:layout_constraintTop_toBottomOf="@id/calendar"
+            android:text="@string/only_saved" />
 
-    </LinearLayout>
+        <fragment
+            android:id="@+id/fragment_cams_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/checkbox_only_saved"
+            app:layout_constraintBottom_toTopOf="@id/button_clear_date_filter"
+            class="ru.vladislavsumin.cams.ui.video.filters.cams.CamsFilterFragment"
+            tools:layout="@layout/fragment_cams_filter" />
+
+        <Button
+            android:id="@+id/button_clear_date_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:layout_marginRight="70dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/clear_all_filters" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

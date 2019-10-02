@@ -35,16 +35,9 @@ class VideoPresenter : BasePresenter<VideoView>() {
     var showOnlySaved: Boolean by mShowOnlySaved.delegate()
     var dateFilter: Long by mDateFilter.delegate()
 
-//    private val filter: RxListFilter<Record>
 
     init {
         Injector.inject(this)
-
-//        filter = RxListFilter(mRecordManager.observeRecords(),
-//                mShowOnlySaved.map { { record: Record -> !it || record.keepForever } },
-//                mDateFilter.map { { record: Record -> it == 0L || record.timestamp in it..(it + 24 * 60 * 60 * 1000) } }
-//        )
-
         updateVideoList()
     }
 
@@ -53,7 +46,6 @@ class VideoPresenter : BasePresenter<VideoView>() {
     }
 
     fun observeRecordsToShow(): Observable<List<Record>> {
-//        return filter.observeFiltered()
         return Observable.combineLatest(
                 mShowOnlySaved,
                 mDateFilter,

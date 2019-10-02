@@ -8,11 +8,12 @@ import javax.inject.Singleton
 @Singleton
 class CredentialStorage @Inject constructor(context: Context) {
     companion object {
+        private val PROPERTIES_FILE = CredentialStorage::class.java.name
         private const val SERVER_ADDRESS = "server_address"
     }
 
     private val mPreferences = RxSharedPreferences.create(
-            context.getSharedPreferences(CredentialStorage::class.java.name, Context.MODE_PRIVATE)
+            context.getSharedPreferences(PROPERTIES_FILE, Context.MODE_PRIVATE)
     )
 
     private val mServerAddressPref = mPreferences.getString(SERVER_ADDRESS)

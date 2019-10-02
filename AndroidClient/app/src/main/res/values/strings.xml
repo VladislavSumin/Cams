@@ -23,4 +23,6 @@
     <string name="check_connection_error">Can not connect to server</string>
     <string name="save_record">Save record?</string>
     <string name="delete_or_rename_record">Rename or delete record?</string>
+    <string name="clear_all_filters">Clear all filters</string>
+    <string name="only_saved">Only saved</string>
 </resources>
