@@ -84,7 +84,7 @@ dependencies {
 
         implementation(rxJava)
         implementation(rxAndroid)
-        implementation(rxPreferences)
+//        implementation(rxPreferences)
 
         implementation(retrofit)
         implementation(retrofitAdapterRxJava)

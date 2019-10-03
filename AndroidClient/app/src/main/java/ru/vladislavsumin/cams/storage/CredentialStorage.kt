@@ -1,34 +1,28 @@
 package ru.vladislavsumin.cams.storage
 
 import android.content.Context
-import com.f2prateek.rx.preferences2.RxSharedPreferences
+import ru.vladislavsumin.core.rx.preferences.RxStringProperty
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class CredentialStorage @Inject constructor(context: Context) {
+
     companion object {
         private val PROPERTIES_FILE = CredentialStorage::class.java.name
         private const val SERVER_ADDRESS = "server_address"
     }
 
-    private val mPreferences = RxSharedPreferences.create(
-            context.getSharedPreferences(PROPERTIES_FILE, Context.MODE_PRIVATE)
-    )
+    private val mPreferences = context.getSharedPreferences(PROPERTIES_FILE, Context.MODE_PRIVATE)
 
-    private val mServerAddressPref = mPreferences.getString(SERVER_ADDRESS)
+    private val mServerAddress = RxStringProperty(mPreferences, SERVER_ADDRESS, "")
 
-    var serverAddress: String?
-        set(v) {
-            if (v != null) mServerAddressPref.set(v)
-            else mServerAddressPref.delete()
-        }
-        get() = mServerAddressPref.get()
+    var serverAddress: String by mServerAddress
 
 
     val hasServerAddress
-        get() = mServerAddressPref.isSet
+        get() = serverAddress.isNotEmpty()
 
-    fun observeServerAddress() = mServerAddressPref.asObservable()
+    fun observeServerAddress() = mServerAddress.observe()
 
 }

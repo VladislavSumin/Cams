@@ -31,7 +31,7 @@ class MainActivity : BaseActivity() {
         }
 
         btn_logout.setOnClickListener {
-            credentialStorage.serverAddress = null
+            credentialStorage.serverAddress = ""
             startActivity(LoginActivity.getLaunchIntent(this))
             finish()
         }

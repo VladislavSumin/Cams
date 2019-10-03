@@ -12,12 +12,15 @@ import kotlin.reflect.KProperty
 
 fun Completable.subscribeOnIo() = this.subscribeOn(Schedulers.io())
 fun Completable.observeOnMainThread() = this.observeOn(AndroidSchedulers.mainThread())
+fun Completable.observeOnIo() = this.observeOn(Schedulers.io())
 
 fun <T> Single<T>.subscribeOnIo() = this.subscribeOn(Schedulers.io())
 fun <T> Single<T>.observeOnMainThread() = this.observeOn(AndroidSchedulers.mainThread())
+fun <T> Single<T>.observeOnIo() = this.observeOn(Schedulers.io())
 
-fun <T> Observable<T>.observeOnMainThread(): Observable<T> = this.observeOn(AndroidSchedulers.mainThread())
 fun <T> Observable<T>.subscribeOnIo(): Observable<T> = this.subscribeOn(Schedulers.io())
+fun <T> Observable<T>.observeOnMainThread(): Observable<T> = this.observeOn(AndroidSchedulers.mainThread())
+fun <T> Observable<T>.observeOnIo(): Observable<T> = this.observeOn(Schedulers.io())
 
 
 operator fun <T> BehaviorSubject<T>.getValue(thisRef: Any?, property: KProperty<*>): T {
