@@ -12,6 +12,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
+@Deprecated("write new one")
 class RecordManager @Inject constructor(
         private val mCredentialStorage: CredentialStorage,
         private val recordsApi: RecordsApi

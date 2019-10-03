@@ -44,40 +44,40 @@ class LoginPresenter : BasePresenter<LoginView>() {
         viewState.showCheckConnectionDialog()
 
         Completable.mergeArrayDelayError(
-            connectionManager.checkConnection(serverAddress)
-                .subscribeOnIo(),
-            Completable.timer(1500, TimeUnit.MILLISECONDS)
+                connectionManager.checkConnection(serverAddress)
+                        .subscribeOnIo(),
+                Completable.timer(1500, TimeUnit.MILLISECONDS)
         )
-            .observeOnMainThread()
-            .subscribe({
-                onCheckConnectionSuccess(serverAddress)
-            }, {
-                onCheckConnectionError(it)
-            })
-            .autoDispose()
+                .observeOnMainThread()
+                .subscribe({
+                    onCheckConnectionSuccess(serverAddress)
+                }, {
+                    onCheckConnectionError(it)
+                })
+                .autoDispose()
     }
 
     private fun onCheckConnectionSuccess(serverAddress: String) {
         viewState.setConnectionDialogStateToSuccess()
         Single.timer(1500, TimeUnit.MILLISECONDS)
-            .observeOnMainThread()
-            .subscribe { _, _ ->
-                viewState.dismissCheckConnectionDialog()
-                credentialStorage.serverAddress = serverAddress
-                viewState.startActivity { MainActivity.getLaunchIntent(it) }
-                viewState.finish()
-            }
-            .autoDispose()
+                .observeOnMainThread()
+                .subscribe { _, _ ->
+                    viewState.dismissCheckConnectionDialog()
+                    credentialStorage.serverAddress = serverAddress
+                    viewState.startActivity { MainActivity.getLaunchIntent(it) }
+                    viewState.finish()
+                }
+                .autoDispose()
     }
 
     private fun onCheckConnectionError(e: Throwable) {
         Log.d(TAG, "Error on check server connection", e)
         viewState.setConnectionDialogStateToError()
         Single.timer(1500, TimeUnit.MILLISECONDS)
-            .observeOnMainThread()
-            .subscribe { _, _ ->
-                viewState.dismissCheckConnectionDialog()
-            }
-            .autoDispose()
+                .observeOnMainThread()
+                .subscribe { _, _ ->
+                    viewState.dismissCheckConnectionDialog()
+                }
+                .autoDispose()
     }
 }
