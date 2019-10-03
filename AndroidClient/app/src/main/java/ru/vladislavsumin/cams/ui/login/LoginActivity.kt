@@ -37,8 +37,6 @@ class LoginActivity : BaseActivity(), LoginView {
 
         Injector.inject(this)
 
-        //TODO fix
-        login.isEnabled = false
         login.setOnClickListener { mPresenter.login(address.text.toString()) }
         address.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {

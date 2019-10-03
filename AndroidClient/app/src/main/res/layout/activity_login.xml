@@ -46,6 +46,7 @@
             android:textSize="15sp"
             android:text="@string/connect"
             android:textColor="@color/button_login_color"
+            android:enabled="false"
             android:layout_height="wrap_content">
     </Button>
 

@@ -35,7 +35,8 @@
                   android:configChanges="orientation|screenSize"/>
 
         <activity android:name=".ui.cams.CamsActivity"/>
-        <activity android:name=".ui.login.LoginActivity"/>
+        <activity android:name=".ui.login.LoginActivity"
+            android:windowSoftInputMode="adjustResize"/>
 
     </application>
 </manifest>
