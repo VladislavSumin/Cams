@@ -10,14 +10,13 @@ import ru.vladislavsumin.cams.domain.RecordManager
 import ru.vladislavsumin.cams.entity.Record
 import java.io.IOException
 import java.nio.file.Path
-import java.util.*
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@RequestMapping("api/v1/records")
-class RecordsApi {
+@RequestMapping("api/v2/records")
+class RecordsApiV2 {
     @Autowired
     lateinit var recordManager: RecordManager
 
@@ -27,19 +26,23 @@ class RecordsApi {
     @GetMapping
     @ResponseBody
     fun getList(
-        @RequestParam(name = "date", required = false) date: Date?,
-        @RequestParam(name = "period", required = false) period: Long?
+            @RequestParam(name = "date_filter_from", required = false) dateFilterFrom: Long?,
+            @RequestParam(name = "date_filter_to", required = false) dateFilterTo: Long?,
+            @RequestParam(name = "only_saved", required = false) onlySaved: Boolean?
     ): Iterable<Record> {
-        return if (date == null) recordManager.getAll()
-        else recordManager.getInterval(date, period ?: 24 * 60 * 60 * 1000)
+        return recordManager.getFiltered(
+                dateFilterFrom ?: 0L,
+                dateFilterTo ?: System.currentTimeMillis(),
+                onlySaved ?: false
+        )
     }
 
     @GetMapping("/record/{id}")
     @Throws(ServletException::class, IOException::class)
     fun getVideo(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        @PathVariable id: Long
+            request: HttpServletRequest,
+            response: HttpServletResponse,
+            @PathVariable id: Long
     ) {
         //TODO тут нужна защита поля name от недопустимых символов
         //TODO вернуть 404 если файл не найден
@@ -50,15 +53,15 @@ class RecordsApi {
 
     @PostMapping("/save")
     fun save(
-        @RequestParam id: Long,
-        @RequestParam(required = false) name: String?
+            @RequestParam id: Long,
+            @RequestParam(required = false) name: String?
     ): Record {
         return recordManager.save(id, name)
     }
 
     @PostMapping("/delete")
     fun delete(
-        @RequestParam id: Long
+            @RequestParam id: Long
     ): Record {
         return recordManager.delete(id)
     }

@@ -43,9 +43,22 @@ class RecordManager @Autowired constructor(
             .sortedBy { it.timestamp }
             .reversed() //TODO replace to sql sort
 
+    @Deprecated("v1 api")
     fun getInterval(begin: Date, period: Long): Iterable<Record> {
         return getAll()
                 .filter { it.timestamp > begin.time && it.timestamp < begin.time + period }
+    }
+
+    fun getFiltered(dateFilterFrom: Long,
+                    dateFilterTo: Long,
+                    onlySaved: Boolean): List<Record> {
+
+        //TODO change to sql request
+        return getAll().asSequence()
+                .filter { it.timestamp > dateFilterFrom }
+                .filter { it.timestamp <= dateFilterTo }
+                .filter { !onlySaved or it.keepForever }
+                .toList()
     }
 
     fun getPath(id: Long): Path {
