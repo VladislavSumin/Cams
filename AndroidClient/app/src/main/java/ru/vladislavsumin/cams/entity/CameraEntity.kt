@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import ru.vladislavsumin.cams.dto.CameraDTO
 
-data class CameraDAO(
+data class CameraEntity(
         val id: Long = 0L,
         val name: String? = null,
         val ip: String = "",
@@ -40,18 +40,18 @@ data class CameraDAO(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CameraDAO> {
-        override fun createFromParcel(parcel: Parcel): CameraDAO {
-            return CameraDAO(parcel)
+    companion object CREATOR : Parcelable.Creator<CameraEntity> {
+        override fun createFromParcel(parcel: Parcel): CameraEntity {
+            return CameraEntity(parcel)
         }
 
-        override fun newArray(size: Int): Array<CameraDAO?> {
+        override fun newArray(size: Int): Array<CameraEntity?> {
             return arrayOfNulls(size)
         }
     }
 }
 
-fun CameraDTO.toDAO() = CameraDAO(
+fun CameraDTO.toEntity() = CameraEntity(
         id = this.id,
         name = this.name,
         ip = this.ip,
@@ -62,9 +62,9 @@ fun CameraDTO.toDAO() = CameraDAO(
         deleted = this.deleted
 )
 
-fun List<CameraDTO>.toDAO() = this.map { it.toDAO() }
+fun List<CameraDTO>.toEntity() = this.map { it.toEntity() }
 
-fun CameraDAO.toDTO() = CameraDTO(
+fun CameraEntity.toDTO() = CameraDTO(
         id = this.id,
         name = this.name,
         ip = this.ip,

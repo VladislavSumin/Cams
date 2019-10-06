@@ -7,5 +7,5 @@ data class Record(
     val timestamp: Long = 0L,
     val fileSize: Long = 0L,
     val keepForever: Boolean = false,
-    val camera: CameraDAO? = null
+    val camera: CameraEntity? = null
 )

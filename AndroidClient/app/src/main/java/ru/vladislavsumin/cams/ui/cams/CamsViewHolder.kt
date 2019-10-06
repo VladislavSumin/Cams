@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import ru.vladislavsumin.cams.R
-import ru.vladislavsumin.cams.entity.CameraDAO
+import ru.vladislavsumin.cams.entity.CameraEntity
 import ru.vladislavsumin.core.ui.recyclerview.RWBaseViewHolder
 
-class CamsViewHolder private constructor(view: View) : RWBaseViewHolder<CameraDAO>(view) {
+class CamsViewHolder private constructor(view: View) : RWBaseViewHolder<CameraEntity>(view) {
     companion object : ViewHolderFactory<CamsViewHolder> {
 
         private const val LAYOUT = R.layout.list_cams_element
@@ -26,7 +26,7 @@ class CamsViewHolder private constructor(view: View) : RWBaseViewHolder<CameraDA
     private val isDisabled: TextView = view.findViewById(R.id.cam_is_disabled)
 
 
-    override fun bind(item: CameraDAO) {
+    override fun bind(item: CameraEntity) {
         name.text = item.name
         address.text = address.context.getString(R.string.ip_and_port, item.ip, item.port)
 
