@@ -1,8 +1,7 @@
-package ru.vladislavsumin.cams.dao
+package ru.vladislavsumin.cams.entity
 
 import javax.persistence.*
 
-@Deprecated("rename to DAO")
 @Entity(name = "records")
 data class Record(
 
@@ -24,5 +23,5 @@ data class Record(
     val keepForever: Boolean = false,
 
     @ManyToOne
-    val camera: CameraDAO? = null
+    val camera: CameraEntity? = null
 )

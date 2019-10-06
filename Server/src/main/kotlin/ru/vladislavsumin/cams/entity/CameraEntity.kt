@@ -1,4 +1,4 @@
-package ru.vladislavsumin.cams.dao
+package ru.vladislavsumin.cams.entity
 
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -7,7 +7,7 @@ import javax.persistence.*
 
 
 @Entity(name = "cameras")
-data class CameraDAO(
+data class CameraEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(unique = true, nullable = false)
@@ -39,7 +39,7 @@ data class CameraDAO(
     private val records: Set<Record>? = null
 }
 
-fun CameraDAO.toDTO() = CameraDTO(
+fun CameraEntity.toDTO() = CameraDTO(
         id = this.id,
         name = this.name,
         ip = this.ip,
@@ -49,9 +49,9 @@ fun CameraDAO.toDTO() = CameraDTO(
         enabled = this.enabled,
         deleted = this.deleted)
 
-fun List<CameraDAO>.toDTO() = this.map { it.toDTO() }
+fun List<CameraEntity>.toDTO() = this.map { it.toDTO() }
 
-fun CameraDTO.toDAO() = CameraDAO(
+fun CameraDTO.toEntity() = CameraEntity(
         id = this.id,
         name = this.name,
         ip = this.ip,

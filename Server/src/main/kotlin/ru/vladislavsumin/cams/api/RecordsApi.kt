@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler
 import ru.vladislavsumin.cams.domain.RecordManager
-import ru.vladislavsumin.cams.dao.Record
+import ru.vladislavsumin.cams.entity.Record
 import java.io.IOException
 import java.nio.file.Path
 import java.util.*

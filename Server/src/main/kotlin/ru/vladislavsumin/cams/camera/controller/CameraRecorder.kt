@@ -6,7 +6,7 @@ import ru.vladislavsumin.cams.camera.protocol.CommandRepository
 import ru.vladislavsumin.cams.camera.protocol.Msg
 import ru.vladislavsumin.cams.domain.RecordManager
 import ru.vladislavsumin.cams.domain.VideoEncoderService
-import ru.vladislavsumin.cams.dao.CameraDAO
+import ru.vladislavsumin.cams.entity.CameraEntity
 import ru.vladislavsumin.cams.utils.logger
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -14,7 +14,7 @@ import java.lang.Exception
 import java.nio.file.Path
 
 class CameraRecorder(
-        private val camera: CameraDAO,
+        private val camera: CameraEntity,
         private val videoEncoderService: VideoEncoderService,
         private val recordManager: RecordManager,
         private val tmpDirPath: Path

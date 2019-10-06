@@ -6,11 +6,11 @@ import ru.vladislavsumin.cams.camera.protocol.CommandRepository
 import ru.vladislavsumin.cams.camera.protocol.Msg
 import ru.vladislavsumin.cams.camera.protocol.motion.MotionEvent
 import ru.vladislavsumin.cams.camera.protocol.motion.MotionEventJsonUtils
-import ru.vladislavsumin.cams.dao.CameraDAO
+import ru.vladislavsumin.cams.entity.CameraEntity
 import ru.vladislavsumin.cams.utils.logger
 import java.net.SocketException
 
-class CameraController(private val camera: CameraDAO, private val cameraRecorderFactory: CameraRecorderFactory) {
+class CameraController(private val camera: CameraEntity, private val cameraRecorderFactory: CameraRecorderFactory) {
 
     private var cameraRecorder: CameraRecorder? = null
     private lateinit var connection: AdvancedCameraConnection

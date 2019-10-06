@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import ru.vladislavsumin.cams.api.RecourseNotFoundException
-import ru.vladislavsumin.cams.dao.CameraDAO
-import ru.vladislavsumin.cams.dao.Record
+import ru.vladislavsumin.cams.entity.CameraEntity
+import ru.vladislavsumin.cams.entity.Record
 import ru.vladislavsumin.cams.repository.RecordRepository
 import ru.vladislavsumin.cams.utils.logger
 import java.nio.file.Files
@@ -28,7 +28,7 @@ class RecordManager @Autowired constructor(
         Paths.get(rootPath).resolve("records").toFile().mkdirs()
     }
 
-    fun add(record: Path, camera: CameraDAO, timestamp: Long) {
+    fun add(record: Path, camera: CameraEntity, timestamp: Long) {
         val size = record.toFile().length()
         val record1 = Record(
                 timestamp = timestamp,
