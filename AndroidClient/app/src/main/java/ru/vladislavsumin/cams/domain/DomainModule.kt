@@ -7,10 +7,15 @@ import javax.inject.Singleton
 
 @Module
 class DomainModule {
-
     @Provides
     @Singleton
     fun provideVibrationManager(context: Context): VibrationManagerI {
         return VibrationManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNetworkDiscoveryManager(): NetworkDiscoveryManagerI {
+        return NetworkDiscoveryManager()
     }
 }

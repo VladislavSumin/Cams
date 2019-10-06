@@ -6,6 +6,8 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import ru.vladislavsumin.cams.app.Injector
 import ru.vladislavsumin.cams.domain.ConnectionManager
+import ru.vladislavsumin.cams.domain.NetworkDiscoveryManager
+import ru.vladislavsumin.cams.domain.NetworkDiscoveryManagerI
 import ru.vladislavsumin.cams.storage.CredentialStorage
 import ru.vladislavsumin.core.mvp.BasePresenter
 import ru.vladislavsumin.cams.ui.MainActivity
@@ -27,6 +29,9 @@ class LoginPresenter : BasePresenter<LoginView>() {
     @Inject
     lateinit var credentialStorage: CredentialStorage
 
+    @Inject
+    lateinit var networkDiscoveryManager: NetworkDiscoveryManagerI
+
     init {
         Injector.inject(this)
     }
@@ -36,7 +41,12 @@ class LoginPresenter : BasePresenter<LoginView>() {
         if (credentialStorage.hasServerAddress) {
             viewState.startActivity { MainActivity.getLaunchIntent(it) }
             viewState.finish()
+            return
         }
+
+        networkDiscoveryManager.scan()
+                .subscribe()
+                .autoDispose()
     }
 
     fun login(serverAddress: String) {
