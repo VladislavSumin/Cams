@@ -5,11 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.activity_login.*
 import ru.vladislavsumin.cams.R
 import ru.vladislavsumin.cams.app.Injector
 import ru.vladislavsumin.cams.domain.VibrationManagerI
+import ru.vladislavsumin.cams.dto.ServerInfoDTO
 import ru.vladislavsumin.core.mvp.BaseActivity
 import ru.vladislavsumin.cams.ui.view.WaitDialog
 import javax.inject.Inject
@@ -36,7 +40,15 @@ class LoginActivity : BaseActivity(), LoginView {
         setContentView(LAYOUT)
 
         Injector.inject(this)
+    }
 
+    override fun setupUi() {
+        super.setupUi()
+        server_list.divider = null
+    }
+
+    override fun setupUx() {
+        super.setupUx()
         login.setOnClickListener { mPresenter.login(address.text.toString()) }
         address.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -49,6 +61,10 @@ class LoginActivity : BaseActivity(), LoginView {
                 login.isEnabled = s.isNotEmpty()
             }
         })
+
+        server_list.setOnItemClickListener { _, view, _, _ ->
+            address.setText((view as TextView).text)
+        }
     }
 
     override fun showCheckConnectionDialog() {
@@ -71,5 +87,12 @@ class LoginActivity : BaseActivity(), LoginView {
     override fun setConnectionDialogStateToError() {
         vibrationManager.vibrateShort()
         dialog.setState(WaitDialog.State.Error, R.string.check_connection_error)
+    }
+
+    override fun setServerList(list: List<ServerInfoDTO>) {
+        newtwork_discovery_text.visibility = View.VISIBLE
+        val array = list.map { it.address }.toTypedArray()
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, array)
+        server_list.adapter = adapter
     }
 }

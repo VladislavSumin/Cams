@@ -45,7 +45,8 @@ class LoginPresenter : BasePresenter<LoginView>() {
         }
 
         networkDiscoveryManager.scan()
-                .subscribe()
+                .observeOnMainThread()
+                .subscribe { viewState.setServerList(it) }
                 .autoDispose()
     }
 

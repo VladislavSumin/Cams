@@ -1,5 +1,6 @@
 package ru.vladislavsumin.cams.ui.login
 
+import ru.vladislavsumin.cams.dto.ServerInfoDTO
 import ru.vladislavsumin.core.mvp.BaseView
 
 interface LoginView : BaseView {
@@ -9,4 +10,6 @@ interface LoginView : BaseView {
     fun setConnectionDialogStateToWait()
     fun setConnectionDialogStateToSuccess()
     fun setConnectionDialogStateToError()
+
+    fun setServerList(list: List<ServerInfoDTO>)
 }

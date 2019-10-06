@@ -26,4 +26,5 @@
     <string name="clear_all_filters">Clear all filters</string>
     <string name="only_saved">Only saved</string>
     <string name="records">Records</string>
+    <string name="network_discovery">Network discovery:</string>
 </resources>
