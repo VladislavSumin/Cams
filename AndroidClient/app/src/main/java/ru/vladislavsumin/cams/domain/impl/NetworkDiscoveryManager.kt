@@ -15,7 +15,7 @@ import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.SocketTimeoutException
 
-class NetworkDiscoveryManager(private val mNetworkManager: NetworkManagerI) : NetworkDiscoveryManagerI {
+class NetworkDiscoveryManager(mNetworkManager: NetworkManagerI) : NetworkDiscoveryManagerI {
     companion object {
         private val TAG = tag<NetworkDiscoveryManager>()
 
@@ -32,15 +32,17 @@ class NetworkDiscoveryManager(private val mNetworkManager: NetworkManagerI) : Ne
                         .subscribeOnIo()
                 else Observable.just(emptyList())
             }
-            .observeOnIo()
+            .doOnSubscribe { Log.d(TAG, "subscribe to scan network") }
+            .doOnDispose { Log.d(TAG, "unsubscribe from scan network") }
             .share()
 
     private fun createScannerObservable(): Observable<List<ServerInfoDTO>> {
         return Observable.create<List<ServerInfoDTO>> {
-            Log.d(TAG, "Start scan network")
+            Log.d(TAG, "start scanner")
             val scanner = Scanner(it)
+            it.setCancellable { scanner.dispose() }
             scanner.run()
-            Log.d(TAG, "Stop scan network")
+            Log.d(TAG, "stop scanner")
         }
     }
 
@@ -50,7 +52,7 @@ class NetworkDiscoveryManager(private val mNetworkManager: NetworkManagerI) : Ne
     }
 
     private class Scanner(private val emitter: ObservableEmitter<List<ServerInfoDTO>>) {
-        private lateinit var socket: DatagramSocket
+        private var socket: DatagramSocket? = null
         private val datagramPacket = DatagramPacket(ByteArray(PACKET_SIZE), PACKET_SIZE)
         private val servers: MutableList<ServerInfoDTO> = mutableListOf()
 
@@ -58,7 +60,7 @@ class NetworkDiscoveryManager(private val mNetworkManager: NetworkManagerI) : Ne
             try {
                 socket = DatagramSocket()
                 socket.use {
-                    socket.soTimeout = TIMEOUT
+                    socket!!.soTimeout = TIMEOUT
                     while (!emitter.isDisposed) {
                         try {
                             sendRequest()
@@ -74,17 +76,22 @@ class NetworkDiscoveryManager(private val mNetworkManager: NetworkManagerI) : Ne
             }
         }
 
+        fun dispose() {
+            // force close socket do not wait TIMEOUT
+            socket?.close()
+        }
+
         private fun sendRequest() {
             Log.v(TAG, "send request packet")
             datagramPacket.address = InetAddress.getByName("255.255.255.255")
             datagramPacket.port = REMOTE_PORT
-            socket.send(datagramPacket)
+            socket!!.send(datagramPacket)
         }
 
         private fun processResponse() {
             while (true) {
                 try {
-                    socket.receive(datagramPacket)
+                    socket!!.receive(datagramPacket)
                     val serverInfoDTO = ServerInfoDTO.fromByteArray(datagramPacket.data)
                     Log.v(TAG, "receive response from ${datagramPacket.address}, response=$serverInfoDTO")
                     if (!servers.contains(serverInfoDTO)) {
