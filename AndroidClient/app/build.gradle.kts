@@ -17,7 +17,7 @@ android {
     compileSdkVersion(28)
     defaultConfig {
         applicationId = "ru.vladislavsumin.cams"
-        minSdkVersion(23)
+        minSdkVersion(24)
         targetSdkVersion(28) // NO SOURCES FOR 29 API !!!
         versionCode = 1
         versionName = "1.0"
