@@ -4,15 +4,18 @@ import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import ru.vladislavsumin.cams.domain.interfaces.NetworkDiscoveryManagerI
+import ru.vladislavsumin.cams.domain.interfaces.NetworkManagerI
 import ru.vladislavsumin.cams.dto.ServerInfoDTO
+import ru.vladislavsumin.core.utils.observeOnIo
 import ru.vladislavsumin.core.utils.subscribeOnIo
 import ru.vladislavsumin.core.utils.tag
+import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.SocketTimeoutException
 
-class NetworkDiscoveryManager : NetworkDiscoveryManagerI {
+class NetworkDiscoveryManager(private val mNetworkManager: NetworkManagerI) : NetworkDiscoveryManagerI {
     companion object {
         private val TAG = tag<NetworkDiscoveryManager>()
 
@@ -21,14 +24,26 @@ class NetworkDiscoveryManager : NetworkDiscoveryManagerI {
         private const val TIMEOUT = 7000
     }
 
-    private val scanner = Observable.create<List<ServerInfoDTO>> {
-        Log.d(TAG, "Start scan network")
-        val scanner = Scanner(it)
-        scanner.run()
-        Log.d(TAG, "Stop scan network")
-    }
-            .subscribeOnIo()
+    private val scanner: Observable<List<ServerInfoDTO>> = mNetworkManager.observeNetworkConnected()
+            .observeOnIo()
+            .switchMap { connected ->
+                Log.d(TAG, "switch map called")
+                if (connected) createScannerObservable()
+                        .subscribeOnIo()
+                else Observable.just(emptyList())
+            }
+            .observeOnIo()
             .share()
+
+    private fun createScannerObservable(): Observable<List<ServerInfoDTO>> {
+        return Observable.create<List<ServerInfoDTO>> {
+            Log.d(TAG, "Start scan network")
+            val scanner = Scanner(it)
+            scanner.run()
+            Log.d(TAG, "Stop scan network")
+        }
+    }
+
 
     override fun scan(): Observable<List<ServerInfoDTO>> {
         return scanner
@@ -40,17 +55,22 @@ class NetworkDiscoveryManager : NetworkDiscoveryManagerI {
         private val servers: MutableList<ServerInfoDTO> = mutableListOf()
 
         fun run() {
-            socket = DatagramSocket()
-            socket.use {
-                socket.soTimeout = TIMEOUT
-                while (!emitter.isDisposed) {
-                    try {
-                        sendRequest()
-                        processResponse()
-                    } catch (e: InterruptedException) {
-                        break
+            try {
+                socket = DatagramSocket()
+                socket.use {
+                    socket.soTimeout = TIMEOUT
+                    while (!emitter.isDisposed) {
+                        try {
+                            sendRequest()
+                            processResponse()
+                        } catch (e: InterruptedException) {
+                            break
+                        }
                     }
                 }
+            } catch (e: IOException) {
+                Log.d(TAG, "network error: ${e.message}")
+                emitter.onComplete()
             }
         }
 

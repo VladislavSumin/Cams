@@ -3,7 +3,6 @@ package ru.vladislavsumin.cams.app
 import android.app.Application
 import android.util.Log
 
-@Suppress("unused")
 class App : Application() {
 
     override fun onCreate() {
@@ -14,8 +13,8 @@ class App : Application() {
 
     private fun initDagger() {
         Injector = DaggerAppComponent.builder()
-            .appModule(AppModule(applicationContext))
-            .build()
+                .appModule(AppModule(applicationContext))
+                .build()
         Log.i(TAG, "Dagger initialized")
     }
 

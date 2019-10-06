@@ -90,7 +90,7 @@ class LoginActivity : BaseActivity(), LoginView {
     }
 
     override fun setServerList(list: List<ServerInfoDTO>) {
-        newtwork_discovery_text.visibility = View.VISIBLE
+        newtwork_discovery_text.visibility = if (list.isEmpty()) View.INVISIBLE else View.VISIBLE
         val array = list.map { it.address }.toTypedArray()
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, array)
         server_list.adapter = adapter

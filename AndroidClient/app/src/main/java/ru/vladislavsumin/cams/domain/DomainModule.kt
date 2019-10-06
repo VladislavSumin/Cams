@@ -24,8 +24,8 @@ class DomainModule {
 
     @Provides
     @Singleton
-    fun provideNetworkDiscoveryManager(): NetworkDiscoveryManagerI {
-        return NetworkDiscoveryManager()
+    fun provideNetworkDiscoveryManager(networkManager: NetworkManagerI): NetworkDiscoveryManagerI {
+        return NetworkDiscoveryManager(networkManager)
     }
 
     @Provides
