@@ -3,6 +3,7 @@ package ru.vladislavsumin.cams.ui.cams
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import ru.vladislavsumin.cams.app.Injector
+import ru.vladislavsumin.cams.entity.toDAO
 import ru.vladislavsumin.cams.network.api.CamsApi
 import ru.vladislavsumin.core.mvp.BasePresenter
 import ru.vladislavsumin.core.utils.observeOnMainThread
@@ -29,14 +30,15 @@ class CamsPresenter : BasePresenter<CamsView>() {
 
     private fun updateCamsList() {
         mCamsApi.getAll()
-            .subscribeOnIo()
-            .observeOnMainThread()
-            .subscribe({
-                viewState.showList(it)
-            }, {
-                Log.d(CamsActivity.TAG, "Failed load data: ${it.message}")
-                viewState.showError(it.message)
-            })
-            .autoDispose()
+                .map { it.toDAO() }
+                .subscribeOnIo()
+                .observeOnMainThread()
+                .subscribe({
+                    viewState.showList(it)
+                }, {
+                    Log.d(CamsActivity.TAG, "Failed load data: ${it.message}")
+                    viewState.showError(it.message)
+                })
+                .autoDispose()
     }
 }

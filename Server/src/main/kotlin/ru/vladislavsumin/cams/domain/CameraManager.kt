@@ -10,9 +10,9 @@ class CameraManager {
     @Autowired
     lateinit var cameraRepository: CameraRepository
 
-    fun getAll(includeDeleted: Boolean = false): Iterable<CameraDAO> {
-        return if (includeDeleted) cameraRepository.findAll()
-        else cameraRepository.findAllByDeleted(false)
+    fun getAll(includeDeleted: Boolean = false): List<CameraDAO> {
+        return if (includeDeleted) cameraRepository.findAll().toList()
+        else cameraRepository.findAllByDeleted(false).toList()
     }
 
     fun getEnabled() = cameraRepository.findAllByDeletedFalseAndEnabledTrue()

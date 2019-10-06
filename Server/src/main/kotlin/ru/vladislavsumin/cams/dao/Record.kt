@@ -2,6 +2,7 @@ package ru.vladislavsumin.cams.dao
 
 import javax.persistence.*
 
+@Deprecated("rename to DAO")
 @Entity(name = "records")
 data class Record(
 

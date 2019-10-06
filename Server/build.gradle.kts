@@ -47,6 +47,7 @@ apply {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+    implementation(project(":DTO"))
 
     implementation(files("./../../NioSocketListener/build/libs/NioSocketListener.jar"))
 

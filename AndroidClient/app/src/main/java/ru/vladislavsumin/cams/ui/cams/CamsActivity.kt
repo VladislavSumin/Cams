@@ -12,7 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.activity_cams.*
 import ru.vladislavsumin.cams.R
 import ru.vladislavsumin.cams.app.Injector
-import ru.vladislavsumin.cams.entity.Camera
+import ru.vladislavsumin.cams.entity.CameraDAO
 import ru.vladislavsumin.cams.ui.MutableListAdapter
 import ru.vladislavsumin.cams.ui.ToolbarActivity
 import ru.vladislavsumin.cams.ui.cams.details.CamDetailActivity
@@ -112,7 +112,7 @@ class CamsActivity : ToolbarActivity(), CamsView {
         cams_list.visibility = View.GONE
     }
 
-    override fun showList(cams: List<Camera>) {
+    override fun showList(cams: List<CameraDAO>) {
         error_text.visibility = View.GONE
         error_reason.visibility = View.GONE
         retry_btn.visibility = View.GONE
@@ -127,7 +127,7 @@ class CamsActivity : ToolbarActivity(), CamsView {
 
         if (resultCode == 0) return
 
-        val camera = data!!.getParcelableExtra<Camera>(CamDetailActivity.EXTRA_CAM_DETAILS)
+        val camera = data!!.getParcelableExtra<CameraDAO>(CamDetailActivity.EXTRA_CAM_DETAILS)
 
         if (resultCode == CamDetailActivity.RESULT_SAVE_OR_UPDATE)
             when (requestCode) {
@@ -144,7 +144,7 @@ class CamsActivity : ToolbarActivity(), CamsView {
             mCamsAdapter.removeItemBy { it.id == camera.id }
     }
 
-    private inner class CamsListAdapter : MutableListAdapter<Camera, CamsViewHolder>(CamsViewHolder.Companion) {
+    private inner class CamsListAdapter : MutableListAdapter<CameraDAO, CamsViewHolder>(CamsViewHolder.Companion) {
 
         override fun onBindViewHolder(holder: CamsViewHolder, position: Int) {
             super.onBindViewHolder(holder, position)

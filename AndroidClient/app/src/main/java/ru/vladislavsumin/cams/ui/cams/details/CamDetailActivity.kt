@@ -7,7 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_cam_detail.*
 import ru.vladislavsumin.cams.R
-import ru.vladislavsumin.cams.entity.Camera
+import ru.vladislavsumin.cams.entity.CameraDAO
 import ru.vladislavsumin.cams.ui.ToolbarActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 
@@ -24,7 +24,7 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
 
         const val EXTRA_CAM_DETAILS = "extra_cam_details"
 
-        fun getLaunchIntent(context: Context, camera: Camera? = null): Intent {
+        fun getLaunchIntent(context: Context, camera: CameraDAO? = null): Intent {
             val intent = Intent(context, CamDetailActivity::class.java)
             intent.putExtra(EXTRA_CAM_DETAILS, camera)
             return intent
@@ -34,7 +34,7 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
     private lateinit var mSaveBtn: MenuItem
     private var mDeleteBtn: MenuItem? = null
 
-    private var camera: Camera? = null
+    private var camera: CameraDAO? = null
 
     @InjectPresenter
     lateinit var mPresenter: CamDetailsPresenter
@@ -44,7 +44,7 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
         setContentView(LAYOUT)
         super.onCreate(savedInstanceState)
 
-        val camera = intent.getParcelableExtra<Camera>(EXTRA_CAM_DETAILS)
+        val camera = intent.getParcelableExtra<CameraDAO>(EXTRA_CAM_DETAILS)
         if (camera != null) setCamera(camera)
     }
 
@@ -97,17 +97,17 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
         }
     }
 
-    override fun finishWithSaveResult(camera: Camera) {
+    override fun finishWithSaveResult(camera: CameraDAO) {
         setResult(RESULT_SAVE_OR_UPDATE, Intent().putExtra(EXTRA_CAM_DETAILS, camera))
         finish()
     }
 
-    override fun finishWithDeleteResult(camera: Camera) {
+    override fun finishWithDeleteResult(camera: CameraDAO) {
         setResult(RESULT_DELETE, Intent().putExtra(EXTRA_CAM_DETAILS, camera))
         finish()
     }
 
-    private fun setCamera(camera: Camera) {
+    private fun setCamera(camera: CameraDAO) {
         this.camera = camera
         cam_name.editText!!.setText(camera.name)
         cam_ip_address.editText!!.setText(camera.ip)
@@ -151,8 +151,8 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
         return result
     }
 
-    private fun getCamera(): Camera {
-        return (this.camera ?: Camera())
+    private fun getCamera(): CameraDAO {
+        return (this.camera ?: CameraDAO())
             .copy(
                 name = cam_name.editText!!.text.toString(),
                 ip = cam_ip_address.editText!!.text.toString(),
