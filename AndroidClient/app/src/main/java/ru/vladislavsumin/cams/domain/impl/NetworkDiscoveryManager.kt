@@ -1,4 +1,4 @@
-package ru.vladislavsumin.cams.domain.Impl
+package ru.vladislavsumin.cams.domain.impl
 
 import android.util.Log
 import io.reactivex.Observable

@@ -1,4 +1,4 @@
-package ru.vladislavsumin.cams.domain.Impl
+package ru.vladislavsumin.cams.domain.impl
 
 import android.content.Context
 import android.os.Build
