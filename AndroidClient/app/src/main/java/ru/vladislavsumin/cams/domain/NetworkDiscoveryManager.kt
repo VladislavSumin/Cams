@@ -1,8 +1,9 @@
 package ru.vladislavsumin.cams.domain
 
 import android.util.Log
-import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import ru.vladislavsumin.cams.dto.ServerInfoDTO
 import ru.vladislavsumin.core.utils.subscribeOnIo
 import ru.vladislavsumin.core.utils.tag
 import java.net.DatagramPacket
@@ -18,64 +19,62 @@ class NetworkDiscoveryManager : NetworkDiscoveryManagerI {
         private const val TIMEOUT = 7000
     }
 
-    private var socket: DatagramSocket? = null
-    private var datagramPacket: DatagramPacket? = null
-
-    private val scanner = Observable.create<Unit> {
+    private val scanner = Observable.create<List<ServerInfoDTO>> {
         Log.d(TAG, "Start scan network")
-        openSocket()
-        while (!it.isDisposed) {
-            try {
-                sendRequest()
-                processResponse()
-            } catch (e: InterruptedException) {
-                break
-            }
-        }
-        closeSocket()
+        val scanner = Scanner(it)
+        scanner.run()
         Log.d(TAG, "Stop scan network")
     }
             .subscribeOnIo()
             .share()
-            .ignoreElements()
 
-    private fun sendRequest() {
-        val socket1 = socket!!
-        val datagramPacket1 = datagramPacket!!
-
-        Log.v(TAG, "Send request packet")
-        datagramPacket1.address = InetAddress.getByName("255.255.255.255")
-        datagramPacket1.port = REMOTE_PORT
-        socket1.send(datagramPacket1)
+    override fun scan(): Observable<List<ServerInfoDTO>> {
+        return scanner
     }
 
-    private fun processResponse() {
-        val socket1 = socket!!
-        val datagramPacket1 = datagramPacket!!
-        socket1.soTimeout = TIMEOUT
-        while (true) {
-            try {
-                socket1.receive(datagramPacket1)
-                Log.d(TAG, "RECEIVED RESPONSE ${datagramPacket1.address}")//TODO
-            } catch (e: SocketTimeoutException) {
-                break
+    private class Scanner(private val emitter: ObservableEmitter<List<ServerInfoDTO>>) {
+        private val socket = DatagramSocket()
+        private val datagramPacket = DatagramPacket(ByteArray(PACKET_SIZE), PACKET_SIZE)
+        private val servers: MutableList<ServerInfoDTO> = mutableListOf()
+
+        fun run() {
+            socket.soTimeout = TIMEOUT
+            while (!emitter.isDisposed) {
+                try {
+                    sendRequest()
+                    processResponse()
+                } catch (e: InterruptedException) {
+                    break
+                }
+            }
+            close()
+        }
+
+        private fun close() {
+            socket.close()
+        }
+
+        private fun sendRequest() {
+            Log.v(TAG, "Send request packet")
+            datagramPacket.address = InetAddress.getByName("255.255.255.255")
+            datagramPacket.port = REMOTE_PORT
+            socket.send(datagramPacket)
+        }
+
+        private fun processResponse() {
+            while (true) {
+                try {
+                    socket.receive(datagramPacket)
+                    val serverInfoDTO = ServerInfoDTO.fromByteArray(datagramPacket.data)
+                    if (!servers.contains(serverInfoDTO)) {
+                        Log.v(TAG, "find new server: $serverInfoDTO")
+                        servers += serverInfoDTO
+                        emitter.onNext(servers)
+                    }
+                } catch (e: SocketTimeoutException) {
+                    break
+                }
             }
         }
-    }
-
-    private fun openSocket() {
-        socket = DatagramSocket()
-        datagramPacket = DatagramPacket(ByteArray(PACKET_SIZE), PACKET_SIZE)
-    }
-
-    private fun closeSocket() {
-        socket!!.close()
-        socket = null
-        datagramPacket = null
-    }
-
-
-    override fun scan(): Completable {
-        return scanner
     }
 }

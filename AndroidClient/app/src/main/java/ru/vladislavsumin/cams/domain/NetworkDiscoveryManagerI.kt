@@ -1,7 +1,8 @@
 package ru.vladislavsumin.cams.domain
 
-import io.reactivex.Completable
+import io.reactivex.Observable
+import ru.vladislavsumin.cams.dto.ServerInfoDTO
 
 interface NetworkDiscoveryManagerI {
-    fun scan(): Completable
+    fun scan(): Observable<List<ServerInfoDTO>>
 }
