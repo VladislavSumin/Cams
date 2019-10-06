@@ -1,8 +1,9 @@
-package ru.vladislavsumin.cams.domain
+package ru.vladislavsumin.cams.domain.Impl
 
 import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import ru.vladislavsumin.cams.domain.interfaces.NetworkDiscoveryManagerI
 import ru.vladislavsumin.cams.dto.ServerInfoDTO
 import ru.vladislavsumin.core.utils.subscribeOnIo
 import ru.vladislavsumin.core.utils.tag
@@ -14,6 +15,7 @@ import java.net.SocketTimeoutException
 class NetworkDiscoveryManager : NetworkDiscoveryManagerI {
     companion object {
         private val TAG = tag<NetworkDiscoveryManager>()
+
         private const val PACKET_SIZE = 1024
         private const val REMOTE_PORT = 8923
         private const val TIMEOUT = 7000
@@ -33,29 +35,27 @@ class NetworkDiscoveryManager : NetworkDiscoveryManagerI {
     }
 
     private class Scanner(private val emitter: ObservableEmitter<List<ServerInfoDTO>>) {
-        private val socket = DatagramSocket()
+        private lateinit var socket: DatagramSocket
         private val datagramPacket = DatagramPacket(ByteArray(PACKET_SIZE), PACKET_SIZE)
         private val servers: MutableList<ServerInfoDTO> = mutableListOf()
 
         fun run() {
-            socket.soTimeout = TIMEOUT
-            while (!emitter.isDisposed) {
-                try {
-                    sendRequest()
-                    processResponse()
-                } catch (e: InterruptedException) {
-                    break
+            socket = DatagramSocket()
+            socket.use {
+                socket.soTimeout = TIMEOUT
+                while (!emitter.isDisposed) {
+                    try {
+                        sendRequest()
+                        processResponse()
+                    } catch (e: InterruptedException) {
+                        break
+                    }
                 }
             }
-            close()
-        }
-
-        private fun close() {
-            socket.close()
         }
 
         private fun sendRequest() {
-            Log.v(TAG, "Send request packet")
+            Log.v(TAG, "send request packet")
             datagramPacket.address = InetAddress.getByName("255.255.255.255")
             datagramPacket.port = REMOTE_PORT
             socket.send(datagramPacket)
@@ -66,8 +66,9 @@ class NetworkDiscoveryManager : NetworkDiscoveryManagerI {
                 try {
                     socket.receive(datagramPacket)
                     val serverInfoDTO = ServerInfoDTO.fromByteArray(datagramPacket.data)
+                    Log.v(TAG, "receive response from ${datagramPacket.address}, response=$serverInfoDTO")
                     if (!servers.contains(serverInfoDTO)) {
-                        Log.v(TAG, "find new server: $serverInfoDTO")
+                        Log.d(TAG, "find new server: $serverInfoDTO")
                         servers += serverInfoDTO
                         emitter.onNext(servers)
                     }

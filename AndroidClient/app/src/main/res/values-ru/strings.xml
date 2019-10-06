@@ -18,4 +18,8 @@
     <string name="save">Сохранить</string>
     <string name="save_record">Сохранить запись?</string>
     <string name="welcome">Добро пожаловать</string>
+    <string name="clear_all_filters">Очистить фильтры</string>
+    <string name="network_discovery">Найденные автоматически:</string>
+    <string name="only_saved">Только сохраненные</string>
+    <string name="records">Записи</string>
 </resources>

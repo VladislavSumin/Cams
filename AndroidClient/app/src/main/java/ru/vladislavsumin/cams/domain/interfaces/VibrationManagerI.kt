@@ -1,4 +1,4 @@
-package ru.vladislavsumin.cams.domain
+package ru.vladislavsumin.cams.domain.interfaces
 
 interface VibrationManagerI {
 

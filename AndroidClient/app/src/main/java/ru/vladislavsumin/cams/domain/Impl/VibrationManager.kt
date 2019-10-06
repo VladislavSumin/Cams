@@ -1,9 +1,10 @@
-package ru.vladislavsumin.cams.domain
+package ru.vladislavsumin.cams.domain.Impl
 
 import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import ru.vladislavsumin.cams.domain.interfaces.VibrationManagerI
 
 class VibrationManager(context: Context) : VibrationManagerI {
     companion object {

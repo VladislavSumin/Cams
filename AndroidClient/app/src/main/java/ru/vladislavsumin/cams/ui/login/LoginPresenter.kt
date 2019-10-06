@@ -5,9 +5,8 @@ import com.arellomobile.mvp.InjectViewState
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.vladislavsumin.cams.app.Injector
-import ru.vladislavsumin.cams.domain.ConnectionManager
-import ru.vladislavsumin.cams.domain.NetworkDiscoveryManager
-import ru.vladislavsumin.cams.domain.NetworkDiscoveryManagerI
+import ru.vladislavsumin.cams.domain.interfaces.ConnectionManagerI
+import ru.vladislavsumin.cams.domain.interfaces.NetworkDiscoveryManagerI
 import ru.vladislavsumin.cams.storage.CredentialStorage
 import ru.vladislavsumin.core.mvp.BasePresenter
 import ru.vladislavsumin.cams.ui.MainActivity
@@ -21,10 +20,14 @@ import javax.inject.Inject
 class LoginPresenter : BasePresenter<LoginView>() {
     companion object {
         private val TAG = tag<LoginPresenter>()
+
+        private const val UI_CONNECT_DELAY = 1000L
+        private const val UI_SUCCESS_DELAY = 1000L
+        private const val UI_ERROR_DELAY = 1500L
     }
 
     @Inject
-    lateinit var connectionManager: ConnectionManager
+    lateinit var connectionManager: ConnectionManagerI
 
     @Inject
     lateinit var credentialStorage: CredentialStorage
@@ -57,20 +60,19 @@ class LoginPresenter : BasePresenter<LoginView>() {
         Completable.mergeArrayDelayError(
                 connectionManager.checkConnection(serverAddress)
                         .subscribeOnIo(),
-                Completable.timer(1500, TimeUnit.MILLISECONDS)
+                Completable.timer(UI_CONNECT_DELAY, TimeUnit.MILLISECONDS)
         )
                 .observeOnMainThread()
-                .subscribe({
-                    onCheckConnectionSuccess(serverAddress)
-                }, {
-                    onCheckConnectionError(it)
-                })
+                .subscribe(
+                        { onCheckConnectionSuccess(serverAddress) },
+                        { onCheckConnectionError(it) }
+                )
                 .autoDispose()
     }
 
     private fun onCheckConnectionSuccess(serverAddress: String) {
         viewState.setConnectionDialogStateToSuccess()
-        Single.timer(1500, TimeUnit.MILLISECONDS)
+        Single.timer(UI_SUCCESS_DELAY, TimeUnit.MILLISECONDS)
                 .observeOnMainThread()
                 .subscribe { _, _ ->
                     viewState.dismissCheckConnectionDialog()
@@ -84,7 +86,7 @@ class LoginPresenter : BasePresenter<LoginView>() {
     private fun onCheckConnectionError(e: Throwable) {
         Log.d(TAG, "Error on check server connection", e)
         viewState.setConnectionDialogStateToError()
-        Single.timer(1500, TimeUnit.MILLISECONDS)
+        Single.timer(UI_ERROR_DELAY, TimeUnit.MILLISECONDS)
                 .observeOnMainThread()
                 .subscribe { _, _ ->
                     viewState.dismissCheckConnectionDialog()

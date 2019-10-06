@@ -12,7 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.activity_login.*
 import ru.vladislavsumin.cams.R
 import ru.vladislavsumin.cams.app.Injector
-import ru.vladislavsumin.cams.domain.VibrationManagerI
+import ru.vladislavsumin.cams.domain.interfaces.VibrationManagerI
 import ru.vladislavsumin.cams.dto.ServerInfoDTO
 import ru.vladislavsumin.core.mvp.BaseActivity
 import ru.vladislavsumin.cams.ui.view.WaitDialog

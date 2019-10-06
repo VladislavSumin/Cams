@@ -1,16 +1,12 @@
-package ru.vladislavsumin.cams.domain
+package ru.vladislavsumin.cams.domain.Impl
 
 import io.reactivex.Completable
+import ru.vladislavsumin.cams.domain.interfaces.ConnectionManagerI
 import ru.vladislavsumin.cams.network.api.AboutApi
 import java.lang.Exception
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class ConnectionManager @Inject constructor(
-        private val aboutApi: AboutApi
-) {
-    fun checkConnection(address: String): Completable {
+class ConnectionManager(private val aboutApi: AboutApi) : ConnectionManagerI {
+    override fun checkConnection(address: String): Completable {
         return aboutApi.about("$address/api/v1/about/")
                 .flatMapCompletable {
                     if (it["connection_state"] == "ok") Completable.complete()
