@@ -1,3 +1,6 @@
 pFfmpegPath=ffmpeg/bin/
 pRecordPath=records/
 pTmpRecordPath=tmp/
+
+pEnableServerDiscovery=false
+pServerDiscoveryAddress=localhost
