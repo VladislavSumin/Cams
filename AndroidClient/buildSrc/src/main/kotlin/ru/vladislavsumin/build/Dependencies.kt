@@ -19,7 +19,6 @@ object Dependencies {
 
     const val rxJava = "io.reactivex.rxjava2:rxjava:${Versions.rxJava}"
     const val rxAndroid = "io.reactivex.rxjava2:rxandroid:${Versions.rxAndroid}"
-    const val rxPreferences = "com.f2prateek.rx.preferences2:rx-preferences:${Versions.rxPreferences}"
 
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     const val retrofitAdapterRxJava = "com.squareup.retrofit2:adapter-rxjava2:${Versions.retrofit}"

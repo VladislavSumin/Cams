@@ -86,14 +86,13 @@ dependencies {
 
         implementation(rxJava)
         implementation(rxAndroid)
-//        implementation(rxPreferences)
 
         implementation(retrofit)
         implementation(retrofitAdapterRxJava)
         implementation(retrofitConverterGson)
 
         //leakcanary
-        debugImplementation("com.squareup.leakcanary:leakcanary-android:2.0-alpha-3")
+//        debugImplementation("com.squareup.leakcanary:leakcanary-android:2.0-alpha-3")
 
         testImplementation("junit:junit:4.12")
 
