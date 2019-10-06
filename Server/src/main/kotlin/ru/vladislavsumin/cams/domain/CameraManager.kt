@@ -2,7 +2,7 @@ package ru.vladislavsumin.cams.domain
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import ru.vladislavsumin.cams.entity.Camera
+import ru.vladislavsumin.cams.dao.CameraDAO
 import ru.vladislavsumin.cams.repository.CameraRepository
 
 @Service
@@ -10,7 +10,7 @@ class CameraManager {
     @Autowired
     lateinit var cameraRepository: CameraRepository
 
-    fun getAll(includeDeleted: Boolean = false): Iterable<Camera> {
+    fun getAll(includeDeleted: Boolean = false): Iterable<CameraDAO> {
         return if (includeDeleted) cameraRepository.findAll()
         else cameraRepository.findAllByDeleted(false)
     }
@@ -18,7 +18,7 @@ class CameraManager {
     fun getEnabled() = cameraRepository.findAllByDeletedFalseAndEnabledTrue()
 
 
-    fun save(camera: Camera) {
+    fun save(camera: CameraDAO) {
         cameraRepository.save(camera)
     }
 

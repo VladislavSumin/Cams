@@ -7,16 +7,17 @@ import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler
 import ru.vladislavsumin.cams.domain.RecordManager
-import ru.vladislavsumin.cams.entity.Record
+import ru.vladislavsumin.cams.dao.Record
 import java.io.IOException
 import java.nio.file.Path
+import java.util.*
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@RequestMapping("api/v2/records")
-class RecordsApiV2 {
+@RequestMapping("api/v1/records")
+class RecordsApi {
     @Autowired
     lateinit var recordManager: RecordManager
 
@@ -26,15 +27,11 @@ class RecordsApiV2 {
     @GetMapping
     @ResponseBody
     fun getList(
-            @RequestParam(name = "date_filter_from", required = false) dateFilterFrom: Long?,
-            @RequestParam(name = "date_filter_to", required = false) dateFilterTo: Long?,
-            @RequestParam(name = "only_saved", required = false) onlySaved: Boolean?
+            @RequestParam(name = "date", required = false) date: Date?,
+            @RequestParam(name = "period", required = false) period: Long?
     ): Iterable<Record> {
-        return recordManager.getFiltered(
-                dateFilterFrom ?: 0L,
-                dateFilterTo ?: System.currentTimeMillis(),
-                onlySaved ?: false
-        )
+        return if (date == null) recordManager.getAll()
+        else recordManager.getInterval(date, period ?: 24 * 60 * 60 * 1000)
     }
 
     @GetMapping("/record/{id}")

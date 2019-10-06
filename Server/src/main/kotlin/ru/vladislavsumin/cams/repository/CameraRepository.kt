@@ -1,10 +1,10 @@
 package ru.vladislavsumin.cams.repository
 
 import org.springframework.data.repository.CrudRepository
-import ru.vladislavsumin.cams.entity.Camera
+import ru.vladislavsumin.cams.dao.CameraDAO
 
-interface CameraRepository : CrudRepository<Camera, Long> {
-    fun findAllByDeleted(deleted: Boolean): Iterable<Camera>
+interface CameraRepository : CrudRepository<CameraDAO, Long> {
+    fun findAllByDeleted(deleted: Boolean): Iterable<CameraDAO>
 
-    fun findAllByDeletedFalseAndEnabledTrue(): Iterable<Camera>
+    fun findAllByDeletedFalseAndEnabledTrue(): Iterable<CameraDAO>
 }

@@ -3,13 +3,13 @@ package ru.vladislavsumin.cams.camera.connection
 import ru.vladislavsumin.cams.camera.protocol.ChannelMsgDecoder.decode
 import ru.vladislavsumin.cams.camera.protocol.ChannelMsgDecoder.encode
 import ru.vladislavsumin.cams.camera.protocol.Msg
-import ru.vladislavsumin.cams.entity.Camera
+import ru.vladislavsumin.cams.dao.CameraDAO
 import ru.vladislavsumin.cams.utils.NotThreadSafe
 import ru.vladislavsumin.cams.utils.ThreadSafe
 import ru.vladislavsumin.cams.utils.logger
 import java.util.concurrent.atomic.AtomicBoolean
 
-class CameraConnection(private val camera: Camera, timeout: Int = 10_000) : AutoCloseable {
+class CameraConnection(private val camera: CameraDAO, timeout: Int = 10_000) : AutoCloseable {
 
     private val socketConnection = SocketConnection(camera.ip, camera.port, timeout)
     private val isConnected = AtomicBoolean(true)

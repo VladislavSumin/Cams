@@ -1,4 +1,4 @@
-package ru.vladislavsumin.cams.entity
+package ru.vladislavsumin.cams.dao
 
 import javax.persistence.*
 
@@ -23,5 +23,5 @@ data class Record(
     val keepForever: Boolean = false,
 
     @ManyToOne
-    val camera: Camera? = null
+    val camera: CameraDAO? = null
 )

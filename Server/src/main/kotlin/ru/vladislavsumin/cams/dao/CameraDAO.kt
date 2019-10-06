@@ -1,13 +1,12 @@
-package ru.vladislavsumin.cams.entity
+package ru.vladislavsumin.cams.dao
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 
 @Entity(name = "cameras")
-data class Camera(
+data class CameraDAO(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
@@ -25,7 +24,6 @@ data class Camera(
     @Column(nullable = false)
     val login: String = "admin",
 
-    @JsonIgnore
     @Column(nullable = false)
     val password: String = "",
 

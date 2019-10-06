@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import ru.vladislavsumin.cams.domain.CameraManager
-import ru.vladislavsumin.cams.entity.Camera
+import ru.vladislavsumin.cams.dao.CameraDAO
 
 @RestController
 @RequestMapping("/api/v1/cams")
@@ -19,7 +19,7 @@ class CamerasApi {
     }
 
     @PutMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun add(@RequestBody camera: Camera) {
+    fun add(@RequestBody camera: CameraDAO) {
         cameraManager.save(camera)
     }
 

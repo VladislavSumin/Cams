@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ru.vladislavsumin.cams.camera.controller.CameraController
 import ru.vladislavsumin.cams.camera.controller.CameraControllerFactory
-import ru.vladislavsumin.cams.entity.Camera
+import ru.vladislavsumin.cams.dao.CameraDAO
 import ru.vladislavsumin.cams.utils.logger
 import javax.annotation.PreDestroy
 
@@ -26,7 +26,7 @@ class CameraConnectionManager @Autowired constructor(
         cams.forEach { it.stop() }
     }
 
-    private fun loadControllers(config: Iterable<Camera>) {
+    private fun loadControllers(config: Iterable<CameraDAO>) {
         config.forEach { cams.add(cameraControllerFactory.createInstance(it)) }
     }
 

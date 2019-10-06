@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import ru.vladislavsumin.cams.api.RecourseNotFoundException
-import ru.vladislavsumin.cams.entity.Camera
-import ru.vladislavsumin.cams.entity.Record
+import ru.vladislavsumin.cams.dao.CameraDAO
+import ru.vladislavsumin.cams.dao.Record
 import ru.vladislavsumin.cams.repository.RecordRepository
 import ru.vladislavsumin.cams.utils.logger
 import java.nio.file.Files
@@ -28,7 +28,7 @@ class RecordManager @Autowired constructor(
         Paths.get(rootPath).resolve("records").toFile().mkdirs()
     }
 
-    fun add(record: Path, camera: Camera, timestamp: Long) {
+    fun add(record: Path, camera: CameraDAO, timestamp: Long) {
         val size = record.toFile().length()
         val record1 = Record(
                 timestamp = timestamp,
@@ -43,22 +43,9 @@ class RecordManager @Autowired constructor(
             .sortedBy { it.timestamp }
             .reversed() //TODO replace to sql sort
 
-    @Deprecated("v1 api")
     fun getInterval(begin: Date, period: Long): Iterable<Record> {
         return getAll()
                 .filter { it.timestamp > begin.time && it.timestamp < begin.time + period }
-    }
-
-    fun getFiltered(dateFilterFrom: Long,
-                    dateFilterTo: Long,
-                    onlySaved: Boolean): List<Record> {
-
-        //TODO change to sql request
-        return getAll().asSequence()
-                .filter { it.timestamp > dateFilterFrom }
-                .filter { it.timestamp <= dateFilterTo }
-                .filter { !onlySaved or it.keepForever }
-                .toList()
     }
 
     fun getPath(id: Long): Path {

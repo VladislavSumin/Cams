@@ -3,7 +3,7 @@ package ru.vladislavsumin.cams.camera.connection
 import ru.vladislavsumin.cams.camera.protocol.CommandCode
 import ru.vladislavsumin.cams.camera.protocol.CommandRepository
 import ru.vladislavsumin.cams.camera.protocol.Msg
-import ru.vladislavsumin.cams.entity.Camera
+import ru.vladislavsumin.cams.dao.CameraDAO
 import ru.vladislavsumin.cams.utils.CalledOnThread
 import ru.vladislavsumin.cams.utils.ThreadSafe
 import ru.vladislavsumin.cams.utils.logger
@@ -12,7 +12,7 @@ import java.util.*
 /**
  * Connect, authenticate, receive msg and ping
  */
-class AdvancedCameraConnection(private val camera: Camera, timeout: Int = 10_000) : AutoCloseable {
+class AdvancedCameraConnection(private val camera: CameraDAO, timeout: Int = 10_000) : AutoCloseable {
     private var connection = CameraConnection(camera, timeout)
 
     private var timer: Timer? = null
