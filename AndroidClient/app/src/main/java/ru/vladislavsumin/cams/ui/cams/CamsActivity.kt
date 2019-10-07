@@ -127,7 +127,7 @@ class CamsActivity : ToolbarActivity(), CamsView {
 
         if (resultCode == 0) return
 
-        val camera = data!!.getParcelableExtra<CameraEntity>(CamDetailActivity.EXTRA_CAM_DETAILS)
+        val camera = data!!.getParcelableExtra<CameraEntity>(CamDetailActivity.EXTRA_CAM_DETAILS)!!
 
         if (resultCode == CamDetailActivity.RESULT_SAVE_OR_UPDATE)
             when (requestCode) {

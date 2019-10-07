@@ -37,7 +37,9 @@ android {
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            //TODO rename to release pure
+            isMinifyEnabled = true
+            isDebuggable = true
             signingConfig = signingConfigs.getByName("shared")
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
