@@ -3,15 +3,11 @@ package ru.vladislavsumin.cams.domain
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import ru.vladislavsumin.cams.domain.impl.ConnectionManager
-import ru.vladislavsumin.cams.domain.impl.NetworkDiscoveryManager
-import ru.vladislavsumin.cams.domain.impl.NetworkManager
-import ru.vladislavsumin.cams.domain.impl.VibrationManager
-import ru.vladislavsumin.cams.domain.interfaces.ConnectionManagerI
-import ru.vladislavsumin.cams.domain.interfaces.NetworkDiscoveryManagerI
-import ru.vladislavsumin.cams.domain.interfaces.NetworkManagerI
-import ru.vladislavsumin.cams.domain.interfaces.VibrationManagerI
+import ru.vladislavsumin.cams.database.dao.CameraDao
+import ru.vladislavsumin.cams.domain.impl.*
+import ru.vladislavsumin.cams.domain.interfaces.*
 import ru.vladislavsumin.cams.network.api.AboutApi
+import ru.vladislavsumin.cams.network.api.CamsApi
 import javax.inject.Singleton
 
 @Module
@@ -38,5 +34,11 @@ class DomainModule {
     @Singleton
     fun provideConnectionManager(aboutApi: AboutApi): ConnectionManagerI {
         return ConnectionManager(aboutApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCamsManager(cameraDao: CameraDao, camsApi: CamsApi): CamsManagerI {
+        return CamsManager(cameraDao, camsApi)
     }
 }

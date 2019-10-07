@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import ru.vladislavsumin.cams.R
-import ru.vladislavsumin.cams.entity.CameraEntity
+import ru.vladislavsumin.cams.database.entity.CameraEntity
 import ru.vladislavsumin.core.ui.recyclerview.RWBaseViewHolder
 
 class CamsViewHolder private constructor(view: View) : RWBaseViewHolder<CameraEntity>(view) {

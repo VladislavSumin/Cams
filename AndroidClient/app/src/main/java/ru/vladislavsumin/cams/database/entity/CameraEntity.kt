@@ -1,10 +1,14 @@
-package ru.vladislavsumin.cams.entity
+package ru.vladislavsumin.cams.database.entity
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import ru.vladislavsumin.cams.dto.CameraDTO
 
+@Entity(tableName = "cams")
 data class CameraEntity(
+        @PrimaryKey
         val id: Long = 0L,
         val name: String? = null,
         val ip: String = "",
@@ -14,6 +18,11 @@ data class CameraEntity(
         val enabled: Boolean = true,
         val deleted: Boolean = false
 ) : Parcelable {
+
+
+    //*************************************************************//
+    //                     Parcelable methods                      //
+    //*************************************************************//
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
             parcel.readString(),

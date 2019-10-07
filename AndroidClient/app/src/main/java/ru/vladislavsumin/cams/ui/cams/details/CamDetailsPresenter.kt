@@ -3,8 +3,8 @@ package ru.vladislavsumin.cams.ui.cams.details
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import ru.vladislavsumin.cams.app.Injector
-import ru.vladislavsumin.cams.entity.CameraEntity
-import ru.vladislavsumin.cams.entity.toDTO
+import ru.vladislavsumin.cams.database.entity.CameraEntity
+import ru.vladislavsumin.cams.database.entity.toDTO
 import ru.vladislavsumin.cams.network.api.CamsApi
 import ru.vladislavsumin.core.mvp.BasePresenter
 import ru.vladislavsumin.core.utils.observeOnMainThread

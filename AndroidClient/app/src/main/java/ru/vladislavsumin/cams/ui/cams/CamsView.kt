@@ -1,7 +1,7 @@
 package ru.vladislavsumin.cams.ui.cams
 
 import com.arellomobile.mvp.MvpView
-import ru.vladislavsumin.cams.entity.CameraEntity
+import ru.vladislavsumin.cams.database.entity.CameraEntity
 
 interface CamsView : MvpView {
     fun showError(errorMsg: String? = null)

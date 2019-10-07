@@ -1,5 +1,7 @@
 package ru.vladislavsumin.cams.entity
 
+import ru.vladislavsumin.cams.database.entity.CameraEntity
+
 
 data class Record(
     val id: Long = 0L,

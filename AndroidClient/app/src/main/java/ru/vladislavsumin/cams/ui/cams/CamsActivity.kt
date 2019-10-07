@@ -12,7 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.activity_cams.*
 import ru.vladislavsumin.cams.R
 import ru.vladislavsumin.cams.app.Injector
-import ru.vladislavsumin.cams.entity.CameraEntity
+import ru.vladislavsumin.cams.database.entity.CameraEntity
 import ru.vladislavsumin.cams.ui.MutableListAdapter
 import ru.vladislavsumin.cams.ui.ToolbarActivity
 import ru.vladislavsumin.cams.ui.cams.details.CamDetailActivity

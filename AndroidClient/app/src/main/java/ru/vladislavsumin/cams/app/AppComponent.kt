@@ -1,6 +1,7 @@
 package ru.vladislavsumin.cams.app
 
 import dagger.Component
+import ru.vladislavsumin.cams.database.DatabaseModule
 import ru.vladislavsumin.cams.domain.DomainModule
 import ru.vladislavsumin.cams.network.ChangeBaseUrlInterceptor
 import ru.vladislavsumin.cams.network.NetworkModule
@@ -15,6 +16,7 @@ import javax.inject.Singleton
 
 @Component(modules = [
     AppModule::class,
+    DatabaseModule::class,
     DomainModule::class,
     NetworkModule::class]
 )

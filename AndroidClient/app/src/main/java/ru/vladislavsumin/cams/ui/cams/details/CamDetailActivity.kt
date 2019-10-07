@@ -7,7 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_cam_detail.*
 import ru.vladislavsumin.cams.R
-import ru.vladislavsumin.cams.entity.CameraEntity
+import ru.vladislavsumin.cams.database.entity.CameraEntity
 import ru.vladislavsumin.cams.ui.ToolbarActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 
