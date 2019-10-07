@@ -115,9 +115,9 @@ dependencies {
 //    implementation("androidx.paging:paging-rxjava2-ktx:2.1.0")
 
         // room
-//    implementation("androidx.room:room-runtime:2.1.0-alpha04")
-//    kapt("androidx.room:room-compiler:2.1.0-alpha04")
-//    implementation("androidx.room:room-rxjava2:2.1.0-alpha04")
+    implementation("androidx.room:room-runtime:2.1.0")
+    kapt("androidx.room:room-compiler:2.1.0")
+    implementation("androidx.room:room-rxjava2:2.1.0")
 //    testImplementation("androidx.room:room-testing:2.1.0-alpha04")
     }
 }

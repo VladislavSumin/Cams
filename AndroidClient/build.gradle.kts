@@ -8,8 +8,8 @@ buildscript {
         maven(url = "https://kotlin.bintray.com/kotlinx/")
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.4.2")
-        classpath(kotlin("gradle-plugin", version = "1.3.41"))
+        classpath("com.android.tools.build:gradle:3.5.1")
+        classpath(kotlin("gradle-plugin", version = "1.3.50"))
     }
 }
 
@@ -32,7 +32,7 @@ plugins {
      * Check plugin && library versions
      * Use task "dependencyUpdates" to check updates
      */
-    id("com.github.ben-manes.versions") version ("0.21.0")
+    id("com.github.ben-manes.versions") version ("0.25.0")
 }
 
 
