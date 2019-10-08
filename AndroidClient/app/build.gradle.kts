@@ -87,6 +87,7 @@ dependencies {
         kapt(moxyCompiler)
 
         implementation(rxJava)
+        implementation(rxKotlin)
         implementation(rxAndroid)
 
         implementation(retrofit)

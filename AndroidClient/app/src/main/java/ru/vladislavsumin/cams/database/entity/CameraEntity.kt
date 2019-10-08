@@ -5,6 +5,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.vladislavsumin.cams.dto.CameraDTO
+import ru.vladislavsumin.cams.utils.SortedListDiff
 
 @Entity(tableName = "cams")
 data class CameraEntity(
@@ -49,13 +50,21 @@ data class CameraEntity(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CameraEntity> {
+    companion object CREATOR : Parcelable.Creator<CameraEntity>, SortedListDiff.Comparator<CameraEntity> {
         override fun createFromParcel(parcel: Parcel): CameraEntity {
             return CameraEntity(parcel)
         }
 
         override fun newArray(size: Int): Array<CameraEntity?> {
             return arrayOfNulls(size)
+        }
+
+        override fun compare(o1: CameraEntity, o2: CameraEntity): Int {
+            return o1.id.compareTo(o2.id)
+        }
+
+        override fun sameContent(o1: CameraEntity, o2: CameraEntity): Boolean {
+            return o1 == o2
         }
     }
 }

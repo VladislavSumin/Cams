@@ -18,6 +18,7 @@ object Dependencies {
     const val moxyCompiler = "tech.schoolhelper:moxy-x-compiler:${Versions.moxy}"
 
     const val rxJava = "io.reactivex.rxjava2:rxjava:${Versions.rxJava}"
+    const val rxKotlin = "io.reactivex.rxjava2:rxkotlin:${Versions.rxKotlin}"
     const val rxAndroid = "io.reactivex.rxjava2:rxandroid:${Versions.rxAndroid}"
 
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
