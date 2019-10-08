@@ -27,14 +27,14 @@ class NetworkDiscoveryManager(mNetworkManager: NetworkManagerI) : NetworkDiscove
     private val scanner: Observable<List<ServerInfoDTO>> = mNetworkManager.observeNetworkConnected()
             .observeOnIo()
             .switchMap { connected ->
-                Log.d(TAG, "switch map called")
                 if (connected) createScannerObservable()
                         .subscribeOnIo()
                 else Observable.just(emptyList())
             }
             .doOnSubscribe { Log.d(TAG, "subscribe to scan network") }
             .doOnDispose { Log.d(TAG, "unsubscribe from scan network") }
-            .share()
+            .replay(1)
+            .refCount()
 
     private fun createScannerObservable(): Observable<List<ServerInfoDTO>> {
         return Observable.create<List<ServerInfoDTO>> {
@@ -62,12 +62,12 @@ class NetworkDiscoveryManager(mNetworkManager: NetworkManagerI) : NetworkDiscove
                 socket.use {
                     socket!!.soTimeout = TIMEOUT
                     while (!emitter.isDisposed) {
-                        try {
+//                        try {
                             sendRequest()
                             processResponse()
-                        } catch (e: InterruptedException) {
-                            break
-                        }
+//                        } catch (e: InterruptedException) {
+//                            break
+//                        }
                     }
                 }
             } catch (e: IOException) {

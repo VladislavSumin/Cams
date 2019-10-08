@@ -1,9 +1,7 @@
 package ru.vladislavsumin.cams.domain.impl
 
-import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Single
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.schedulers.Schedulers
 import ru.vladislavsumin.cams.database.dao.CameraDao
@@ -12,44 +10,30 @@ import ru.vladislavsumin.cams.database.entity.toEntity
 import ru.vladislavsumin.cams.domain.interfaces.CamsManagerI
 import ru.vladislavsumin.cams.network.api.CamsApi
 import ru.vladislavsumin.cams.utils.SortedListDiff
+import ru.vladislavsumin.core.utils.log
 import ru.vladislavsumin.core.utils.observeOnIo
 import ru.vladislavsumin.core.utils.subscribeOnIo
-import java.util.concurrent.TimeUnit
+import ru.vladislavsumin.core.utils.tag
 
 class CamsManager(
         private val repository: CameraDao,
         private val api: CamsApi
 ) : CamsManagerI {
-
-    private val apiGetAllCompletable = api.getAll(true)
-            .map { it.toEntity() }
-            .toObservable()
-            .share()
-
-    private val apiGetAllFlowable =
-            apiGetAllCompletable
-                    .repeatWhen { it.delay(60, TimeUnit.SECONDS) }
-                    .replay(1)
-                    .refCount()
-                    .toFlowable(BackpressureStrategy.LATEST)
-
-    override fun observeAll(): Flowable<List<CameraEntity>> {
-        return apiGetAllFlowable
+    companion object {
+        private val TAG = tag<CamsManager>()
     }
 
+    private val fullUpdateDatabaseCompletable = createFullUpdateDatabase()
 
-    //    private val allFlowable = api.getAll(true)
-//            .map {
-//                Thread.sleep(4000)
-//                it.toEntity()
-//            }
-//            .repeatWhen { it.delay(20, TimeUnit.SECONDS) }
-//            .doOnNext { Log.d("TEST", "data updated") }
-//            .replay(1)
-//            .refCount()
+    override fun observeAll(): Flowable<List<CameraEntity>> {
+        return repository.observeAll()
+    }
 
+    override fun fullUpdateDatabase(): Completable {
+        return fullUpdateDatabaseCompletable
+    }
 
-    private fun fullUpdateDatabase(): Completable {
+    private fun createFullUpdateDatabase(): Completable {//TODO
         val allFromServer = api.getAll(true)
                 .map { it.toEntity() }
                 .subscribeOnIo()
@@ -67,10 +51,12 @@ class CamsManager(
                 .map {
                     SortedListDiff.calculateDif(it.first, it.second, CameraEntity.CREATOR)
                 }
+                .log(TAG, "databaseFullUpdate")
                 .observeOnIo()
                 .map { dispatchChanges(it) }
+                .log(TAG, "databaseFullUpdateDispached")
+                .share()
                 .ignoreElements()
-
     }
 
     private fun dispatchChanges(diff: SortedListDiff.Difference<CameraEntity>) {

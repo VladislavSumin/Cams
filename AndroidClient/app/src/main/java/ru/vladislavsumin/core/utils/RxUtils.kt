@@ -3,6 +3,7 @@
 package ru.vladislavsumin.core.utils
 
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,6 +22,10 @@ fun <T> Single<T>.observeOnIo() = this.observeOn(Schedulers.io())
 fun <T> Observable<T>.subscribeOnIo(): Observable<T> = this.subscribeOn(Schedulers.io())
 fun <T> Observable<T>.observeOnMainThread(): Observable<T> = this.observeOn(AndroidSchedulers.mainThread())
 fun <T> Observable<T>.observeOnIo(): Observable<T> = this.observeOn(Schedulers.io())
+
+fun <T> Flowable<T>.subscribeOnIo(): Flowable<T> = this.subscribeOn(Schedulers.io())
+fun <T> Flowable<T>.observeOnMainThread(): Flowable<T> = this.observeOn(AndroidSchedulers.mainThread())
+fun <T> Flowable<T>.observeOnIo(): Flowable<T> = this.observeOn(Schedulers.io())
 
 
 operator fun <T> BehaviorSubject<T>.getValue(thisRef: Any?, property: KProperty<*>): T {
