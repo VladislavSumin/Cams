@@ -33,6 +33,7 @@ class CamsPresenter : BasePresenter<CamsView>() {
 
     private fun updateCamsList() {
         mCamsManager.observeAll()
+                .map { list -> list.filter { !it.deleted } }//TODO add show delited
                 .subscribeOnIo()
                 .observeOnMainThread()
                 .subscribe({

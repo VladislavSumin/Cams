@@ -1,8 +1,11 @@
 package ru.vladislavsumin.cams.domain.impl
 
+import android.util.Log
+import androidx.annotation.WorkerThread
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.rxkotlin.Observables
+import io.reactivex.rxkotlin.Singles
 import io.reactivex.schedulers.Schedulers
 import ru.vladislavsumin.cams.database.dao.CameraDao
 import ru.vladislavsumin.cams.database.entity.CameraEntity
@@ -23,6 +26,16 @@ class CamsManager(
         private val TAG = tag<CamsManager>()
     }
 
+    // request full cams list from server
+    private val apiGetAllCompletable = api.getAll(true)
+            .map { it.toEntity() }
+            .toObservable()
+            .doOnSubscribe { Log.d(TAG, "request cams list") }
+            .doOnNext { Log.d(TAG, "received cams list: $it") }
+            .doOnError { Log.d(TAG, "error on request cams list: $it") }
+            .share()
+            .firstOrError()
+
     private val fullUpdateDatabaseCompletable = createFullUpdateDatabase()
 
     override fun observeAll(): Flowable<List<CameraEntity>> {
@@ -34,34 +47,39 @@ class CamsManager(
     }
 
     private fun createFullUpdateDatabase(): Completable {//TODO
-        val allFromServer = api.getAll(true)
-                .map { it.toEntity() }
-                .subscribeOnIo()
-                .toObservable()
-
         val allFromDatabase = repository.getAll()
                 .subscribeOnIo()
-                .toObservable()
 
-        return Observables
-                .combineLatest(allFromDatabase, allFromServer) { old, new ->
+        return Singles
+                .zip(allFromDatabase, apiGetAllCompletable) { old, new ->
                     Pair(old, new)
                 }
                 .observeOn(Schedulers.computation())
                 .map {
                     SortedListDiff.calculateDif(it.first, it.second, CameraEntity.CREATOR)
                 }
-                .log(TAG, "databaseFullUpdate")
+//                .log(TAG, "databaseFullUpdate")
                 .observeOnIo()
                 .map { dispatchChanges(it) }
-                .log(TAG, "databaseFullUpdateDispached")
+//                .log(TAG, "databaseFullUpdateDispached")
+                .toObservable()
                 .share()
                 .ignoreElements()
     }
 
+    /**
+     * Dispatch changes from diff to database
+     */
+    @WorkerThread
     private fun dispatchChanges(diff: SortedListDiff.Difference<CameraEntity>) {
         diff.deleted.forEach(repository::delete)
         diff.added.forEach(repository::insert)
         diff.modified.forEach(repository::update)
+    }
+
+    enum class UpdateState {
+        Updated,
+        Updating,
+        Error
     }
 }
