@@ -1,6 +1,5 @@
 package ru.vladislavsumin.cams.domain.impl
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.util.Log
@@ -8,10 +7,7 @@ import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import ru.vladislavsumin.cams.domain.interfaces.NetworkManagerI
 
-class NetworkManager(mContext: Context) : NetworkManagerI {
-    private val mConnectivityService =
-            mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
+class NetworkManager(private val mConnectivityService: ConnectivityManager) : NetworkManagerI {
     private val mNetworkConnected: Observable<Boolean> = Observable.create<Boolean> {
         val callback = NetworkCallback(it)
         mConnectivityService.registerDefaultNetworkCallback(callback)
@@ -19,7 +15,8 @@ class NetworkManager(mContext: Context) : NetworkManagerI {
     }
             .distinctUntilChanged()
             .doOnNext { Log.d("TAG", "network state: $it") }
-            .share()
+            .replay(1)
+            .refCount()
 
     override fun observeNetworkConnected(): Observable<Boolean> = mNetworkConnected
 

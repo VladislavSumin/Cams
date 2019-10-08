@@ -1,6 +1,7 @@
 package ru.vladislavsumin.cams.domain
 
 import android.content.Context
+import android.net.ConnectivityManager
 import dagger.Module
 import dagger.Provides
 import ru.vladislavsumin.cams.database.dao.CameraDao
@@ -26,8 +27,8 @@ class DomainModule {
 
     @Provides
     @Singleton
-    fun provideNetworkManager(context: Context): NetworkManagerI {
-        return NetworkManager(context)
+    fun provideNetworkManager(connectivityManager: ConnectivityManager): NetworkManagerI {
+        return NetworkManager(connectivityManager)
     }
 
     @Provides

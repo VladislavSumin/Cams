@@ -96,7 +96,8 @@ dependencies {
         //leakcanary
 //        debugImplementation("com.squareup.leakcanary:leakcanary-android:2.0-alpha-3")
 
-        testImplementation("junit:junit:4.12")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
+        testImplementation("org.mockito:mockito-core:3.1.0")
 
         androidTestImplementation("androidx.test:runner:1.2.0")
         androidTestImplementation("androidx.test:rules:1.2.0")
