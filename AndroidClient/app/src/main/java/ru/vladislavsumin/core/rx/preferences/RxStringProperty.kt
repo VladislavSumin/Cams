@@ -40,3 +40,7 @@ class RxStringProperty(private val preferences: SharedPreferences,
     operator fun getValue(any: Any, property: KProperty<*>): String = get()
     operator fun setValue(any: Any, property: KProperty<*>, s: String) = set(s)
 }
+
+fun SharedPreferences.getRxPropertyString(name: String, defaultValue: String): RxStringProperty {
+    return RxStringProperty(this, name, defaultValue)
+}

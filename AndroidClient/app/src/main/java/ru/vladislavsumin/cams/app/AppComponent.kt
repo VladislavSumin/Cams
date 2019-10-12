@@ -26,7 +26,6 @@ interface AppComponent {
     fun inject(app: App)
 
     fun inject(activity: BaseActivity)
-    fun inject(activity: CamsActivity)
     fun inject(activity: LoginActivity)
 
     fun inject(presenter: CamsPresenter)

@@ -2,6 +2,7 @@ package ru.vladislavsumin.cams.storage
 
 import android.content.Context
 import ru.vladislavsumin.core.rx.preferences.RxStringProperty
+import ru.vladislavsumin.core.rx.preferences.getRxPropertyString
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,7 +16,7 @@ class CredentialStorage @Inject constructor(context: Context) {
 
     private val mPreferences = context.getSharedPreferences(PROPERTIES_FILE, Context.MODE_PRIVATE)
 
-    private val mServerAddress = RxStringProperty(mPreferences, SERVER_ADDRESS, "")
+    private val mServerAddress = mPreferences.getRxPropertyString(SERVER_ADDRESS, "")
 
     var serverAddress: String by mServerAddress
 
@@ -24,5 +25,4 @@ class CredentialStorage @Inject constructor(context: Context) {
         get() = serverAddress.isNotEmpty()
 
     fun observeServerAddress() = mServerAddress.observe()
-
 }

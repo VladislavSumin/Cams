@@ -42,9 +42,6 @@ class CamsActivity : ToolbarActivity(), CamsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(LAYOUT)
         super.onCreate(savedInstanceState)
-
-        Injector.inject(this)
-
     }
 
     override fun setupUi() {
@@ -54,7 +51,9 @@ class CamsActivity : ToolbarActivity(), CamsView {
 
     override fun setupUx() {
         super.setupUx()
-        retry_btn.setOnClickListener { mPresenter.onClickRetry() }
+        mPresenter.observeCamsList()
+                .subscribe(this::showList)
+                .autoDispose()
     }
 
     private fun setupCamsList() {
@@ -74,8 +73,8 @@ class CamsActivity : ToolbarActivity(), CamsView {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menu.add(Menu.NONE, MENU_ADD_ITEM, Menu.NONE, R.string.add)
-            .setIcon(R.drawable.ic_add)
-            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+                .setIcon(R.drawable.ic_add)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         return true
     }
 
@@ -90,36 +89,9 @@ class CamsActivity : ToolbarActivity(), CamsView {
         }
     }
 
-    override fun showError(errorMsg: String?) {
-        error_text.visibility = View.VISIBLE
-
-        if (errorMsg != null) {
-            error_reason.visibility = View.VISIBLE
-            error_reason.text = errorMsg
-        } else {
-            error_reason.visibility = View.GONE
-        }
-        retry_btn.visibility = View.VISIBLE
-        progress_bar.visibility = View.GONE
-        cams_list.visibility = View.GONE
-    }
-
-    override fun showProgressBar() {
-        error_text.visibility = View.GONE
-        error_reason.visibility = View.GONE
-        retry_btn.visibility = View.GONE
-        progress_bar.visibility = View.VISIBLE
-        cams_list.visibility = View.GONE
-    }
-
-    override fun showList(cams: List<CameraEntity>) {
-        error_text.visibility = View.GONE
-        error_reason.visibility = View.GONE
-        retry_btn.visibility = View.GONE
-        progress_bar.visibility = View.GONE
+    private fun showList(cams: List<CameraEntity>) {
         cams_list.visibility = View.VISIBLE
-
-        mCamsAdapter.items = cams as MutableList
+        mCamsAdapter.items = cams as MutableList //TODO FIX
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

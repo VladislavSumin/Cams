@@ -11,7 +11,7 @@ import ru.vladislavsumin.cams.utils.SortedListDiff
 data class CameraEntity(
         @PrimaryKey
         val id: Long = 0L,
-        val name: String? = null,
+        val name: String = "",
         val ip: String = "",
         val port: Int = 34567,
         val login: String = "admin",
@@ -20,13 +20,12 @@ data class CameraEntity(
         val deleted: Boolean = false
 ) : Parcelable {
 
-
     //*************************************************************//
     //                     Parcelable methods                      //
     //*************************************************************//
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
-            parcel.readString(),
+            parcel.readString()!!,
             parcel.readString()!!,
             parcel.readInt(),
             parcel.readString()!!,

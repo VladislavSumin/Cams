@@ -27,4 +27,6 @@
     <string name="only_saved">Only saved</string>
     <string name="records">Records</string>
     <string name="network_discovery">Network discovery:</string>
+    <string name="disabled">disabled</string>
+    <string name="delited">delited</string>
 </resources>
