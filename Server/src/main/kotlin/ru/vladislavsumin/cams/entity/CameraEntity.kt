@@ -13,8 +13,8 @@ data class CameraEntity(
         @Column(unique = true, nullable = false)
         val id: Long = 0L,
 
-        @Column(nullable = true)
-        val name: String? = null,
+        @Column(nullable = false)
+        val name: String = "",
 
         @Column(nullable = false)
         val ip: String = "",
