@@ -19,6 +19,7 @@ class CamDetailsPresenter : BasePresenter<CamDetailsView>() {
     }
 
     @Inject
+    //TODO переделать на работу с бд
     lateinit var mCamsApi: CamsApi
 
     init {

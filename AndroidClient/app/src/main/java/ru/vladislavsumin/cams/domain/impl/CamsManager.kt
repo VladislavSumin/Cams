@@ -65,7 +65,11 @@ class CamsManager(
     //***********************************************************************//
 
     override fun observeAll(): Flowable<List<CameraEntity>> = mRepository.observeAll()
-    override fun fullUpdateDatabase(): Completable = mFullUpdateDatabaseCompletable
+    override fun observeFullUpdateDatabase(): Completable = mFullUpdateDatabaseCompletable
+    override fun fullUpdateDatabaseAsync() {
+        mFullUpdateDatabaseCompletable.onErrorComplete().subscribe()
+    }
+
     override fun observeDatabaseState(): Observable<DatabaseUpdateState> = mUpdateStateObservable
 
     //***********************************************************************//

@@ -9,14 +9,17 @@ import android.view.View
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_cams.*
 import ru.vladislavsumin.cams.R
-import ru.vladislavsumin.cams.app.Injector
 import ru.vladislavsumin.cams.database.entity.CameraEntity
+import ru.vladislavsumin.cams.domain.impl.CamsManager
 import ru.vladislavsumin.cams.ui.MutableListAdapter
 import ru.vladislavsumin.cams.ui.ToolbarActivity
 import ru.vladislavsumin.cams.ui.cams.details.CamDetailActivity
+import ru.vladislavsumin.core.utils.observeOnMainThread
 import ru.vladislavsumin.core.utils.tag
+import java.util.concurrent.TimeUnit
 
 
 class CamsActivity : ToolbarActivity(), CamsView {
@@ -39,6 +42,8 @@ class CamsActivity : ToolbarActivity(), CamsView {
 
     private lateinit var mCamsAdapter: CamsListAdapter
 
+    private var mSnackbar: Snackbar? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(LAYOUT)
         super.onCreate(savedInstanceState)
@@ -52,7 +57,15 @@ class CamsActivity : ToolbarActivity(), CamsView {
     override fun setupUx() {
         super.setupUx()
         mPresenter.observeCamsList()
+                .observeOnMainThread()
                 .subscribe(this::showList)
+                .autoDispose()
+
+        mPresenter.observeDatabaseStatus()
+                //This need to minimize snackbar blinking
+                .delaySubscription(1, TimeUnit.SECONDS)
+                .observeOnMainThread()
+                .subscribe(this::showDatabaseUpdateState)
                 .autoDispose()
     }
 
@@ -92,6 +105,39 @@ class CamsActivity : ToolbarActivity(), CamsView {
     private fun showList(cams: List<CameraEntity>) {
         cams_list.visibility = View.VISIBLE
         mCamsAdapter.items = cams as MutableList //TODO FIX
+    }
+
+    private fun showDatabaseUpdateState(state: CamsManager.DatabaseUpdateState) {
+        mSnackbar = when (state) {
+            CamsManager.DatabaseUpdateState.UPDATED -> {
+                mSnackbar?.dismiss()
+                null
+            }
+            else -> {
+                makeSnackbar(state)
+            }
+        }
+    }
+
+    private fun makeSnackbar(state: CamsManager.DatabaseUpdateState): Snackbar {
+        val text = when (state) {//TODO move to resources
+            CamsManager.DatabaseUpdateState.UPDATED -> throw RuntimeException("Unsupported state")
+            CamsManager.DatabaseUpdateState.UPDATING -> "Updating database"
+            CamsManager.DatabaseUpdateState.NOT_UPDATED -> "Database not updated"
+            CamsManager.DatabaseUpdateState.ERROR -> "Error on update database"
+        }
+
+        val snackbar = Snackbar.make(cams_root_view, text, Snackbar.LENGTH_INDEFINITE)
+
+        if (state == CamsManager.DatabaseUpdateState.NOT_UPDATED)
+            snackbar.setAction("Update") { mPresenter.updateDatabase() }
+
+        if (state == CamsManager.DatabaseUpdateState.ERROR)
+            snackbar.setAction("Retry") { mPresenter.updateDatabase() }
+
+        //TODO make custom layout
+        snackbar.show()
+        return snackbar
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

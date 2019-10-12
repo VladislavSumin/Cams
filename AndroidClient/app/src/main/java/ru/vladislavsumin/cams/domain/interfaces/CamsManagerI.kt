@@ -8,6 +8,7 @@ import ru.vladislavsumin.cams.domain.impl.CamsManager
 
 interface CamsManagerI {
     fun observeAll(): Flowable<List<CameraEntity>>
-    fun fullUpdateDatabase(): Completable
+    fun observeFullUpdateDatabase(): Completable
+    fun fullUpdateDatabaseAsync()
     fun observeDatabaseState(): Observable<CamsManager.DatabaseUpdateState>
 }
