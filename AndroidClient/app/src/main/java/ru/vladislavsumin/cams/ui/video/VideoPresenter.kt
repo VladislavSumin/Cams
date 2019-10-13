@@ -25,7 +25,7 @@ class VideoPresenter : BasePresenter<VideoView>() {
     lateinit var mRecordsApi: RecordsApiV1
 
     @Inject
-    lateinit var mRecordManager: RecordManagerOld
+    lateinit var mRecordManagerOld: RecordManagerOld
 
     private var saveDisposable: Disposable? = null
 
@@ -42,7 +42,7 @@ class VideoPresenter : BasePresenter<VideoView>() {
     }
 
     fun onSelectRecord(record: Record) {
-        viewState.playVideo(mRecordManager.getRecordUri(record))
+        viewState.playVideo(mRecordManagerOld.getRecordUri(record))
     }
 
     fun observeRecordsToShow(): Observable<List<Record>> {
@@ -50,7 +50,7 @@ class VideoPresenter : BasePresenter<VideoView>() {
                 mShowOnlySaved,
                 mDateFilter,
                 BiFunction<Boolean, Long, Observable<List<Record>>> { showOnlySaved, dateFilter ->
-                    mRecordManager.observeRecords()
+                    mRecordManagerOld.observeRecords()
                             .map { list ->
                                 list.filter {
                                     if (showOnlySaved && !it.keepForever) return@filter false
@@ -65,7 +65,7 @@ class VideoPresenter : BasePresenter<VideoView>() {
     }
 
     private fun updateVideoList() {
-        mRecordManager.updateRecords()
+        mRecordManagerOld.updateRecords()
                 .observeOnMainThread()
                 .subscribe({
                     viewState.showToast("Updated")
