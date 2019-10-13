@@ -3,7 +3,7 @@ package ru.vladislavsumin.cams.domain
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import ru.vladislavsumin.cams.dto.ServerInfoDTO
+import ru.vladislavsumin.cams.dto.ServerInfoDto
 import ru.vladislavsumin.cams.utils.logger
 import java.lang.RuntimeException
 import java.net.DatagramPacket
@@ -25,7 +25,7 @@ class NetworkDiscoveryManager @Autowired constructor(
 
     private lateinit var socket: DatagramSocket
     private lateinit var datagramPacket: DatagramPacket
-    private lateinit var serverInfoDTO: ServerInfoDTO
+    private lateinit var serverInfoDTO: ServerInfoDto
 
     init {
         if (discoveryEnabled) {
@@ -36,7 +36,7 @@ class NetworkDiscoveryManager @Autowired constructor(
     }
 
     private fun start() {
-        serverInfoDTO = ServerInfoDTO(serverAddress)
+        serverInfoDTO = ServerInfoDto(serverAddress)
         val serverNameSize = serverInfoDTO.toByteArray().size
         if (serverNameSize > BUFFER_SIZE) {
             val errorMessage = "Server name size is $serverNameSize, max size is $BUFFER_SIZE"

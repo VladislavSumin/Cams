@@ -5,7 +5,7 @@ import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import ru.vladislavsumin.cams.domain.interfaces.NetworkDiscoveryManagerI
 import ru.vladislavsumin.cams.domain.interfaces.NetworkManagerI
-import ru.vladislavsumin.cams.dto.ServerInfoDTO
+import ru.vladislavsumin.cams.dto.ServerInfoDto
 import ru.vladislavsumin.core.utils.observeOnIo
 import ru.vladislavsumin.core.utils.subscribeOnIo
 import ru.vladislavsumin.core.utils.tag
@@ -24,7 +24,7 @@ class NetworkDiscoveryManager(mNetworkManager: NetworkManagerI) : NetworkDiscove
         private const val TIMEOUT = 7000
     }
 
-    private val scanner: Observable<List<ServerInfoDTO>> = mNetworkManager.observeNetworkConnected()
+    private val scanner: Observable<List<ServerInfoDto>> = mNetworkManager.observeNetworkConnected()
             .observeOnIo()
             .switchMap { connected ->
                 if (connected) createScannerObservable()
@@ -36,8 +36,8 @@ class NetworkDiscoveryManager(mNetworkManager: NetworkManagerI) : NetworkDiscove
             .replay(1)
             .refCount()
 
-    private fun createScannerObservable(): Observable<List<ServerInfoDTO>> {
-        return Observable.create<List<ServerInfoDTO>> {
+    private fun createScannerObservable(): Observable<List<ServerInfoDto>> {
+        return Observable.create<List<ServerInfoDto>> {
             Log.d(TAG, "start scanner")
             val scanner = Scanner(it)
             it.setCancellable { scanner.dispose() }
@@ -47,14 +47,14 @@ class NetworkDiscoveryManager(mNetworkManager: NetworkManagerI) : NetworkDiscove
     }
 
 
-    override fun scan(): Observable<List<ServerInfoDTO>> {
+    override fun scan(): Observable<List<ServerInfoDto>> {
         return scanner
     }
 
-    private class Scanner(private val emitter: ObservableEmitter<List<ServerInfoDTO>>) {
+    private class Scanner(private val emitter: ObservableEmitter<List<ServerInfoDto>>) {
         private var socket: DatagramSocket? = null
         private val datagramPacket = DatagramPacket(ByteArray(PACKET_SIZE), PACKET_SIZE)
-        private val servers: MutableList<ServerInfoDTO> = mutableListOf()
+        private val servers: MutableList<ServerInfoDto> = mutableListOf()
 
         fun run() {
             try {
@@ -92,7 +92,7 @@ class NetworkDiscoveryManager(mNetworkManager: NetworkManagerI) : NetworkDiscove
             while (true) {
                 try {
                     socket!!.receive(datagramPacket)
-                    val serverInfoDTO = ServerInfoDTO.fromByteArray(datagramPacket.data)
+                    val serverInfoDTO = ServerInfoDto.fromByteArray(datagramPacket.data)
                     Log.v(TAG, "receive response from ${datagramPacket.address}, response=$serverInfoDTO")
                     if (!servers.contains(serverInfoDTO)) {
                         Log.d(TAG, "find new server: $serverInfoDTO")

@@ -1,6 +1,6 @@
 package ru.vladislavsumin.cams.dto
 
-data class CameraDTO(
+data class CameraDto(
         val id: Long,
         val name: String,
         val ip: String,

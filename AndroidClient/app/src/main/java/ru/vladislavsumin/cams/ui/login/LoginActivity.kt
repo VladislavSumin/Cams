@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import ru.vladislavsumin.cams.R
 import ru.vladislavsumin.cams.app.Injector
 import ru.vladislavsumin.cams.domain.interfaces.VibrationManagerI
-import ru.vladislavsumin.cams.dto.ServerInfoDTO
+import ru.vladislavsumin.cams.dto.ServerInfoDto
 import ru.vladislavsumin.core.mvp.BaseActivity
 import ru.vladislavsumin.cams.ui.view.WaitDialog
 import javax.inject.Inject
@@ -89,7 +89,7 @@ class LoginActivity : BaseActivity(), LoginView {
         dialog.setState(WaitDialog.State.Error, R.string.check_connection_error)
     }
 
-    override fun setServerList(list: List<ServerInfoDTO>) {
+    override fun setServerList(list: List<ServerInfoDto>) {
         newtwork_discovery_text.visibility = if (list.isEmpty()) View.INVISIBLE else View.VISIBLE
         val array = list.map { it.address }.toTypedArray()
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, array)

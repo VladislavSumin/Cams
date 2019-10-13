@@ -2,7 +2,7 @@ package ru.vladislavsumin.cams.entity
 
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
-import ru.vladislavsumin.cams.dto.CameraDTO
+import ru.vladislavsumin.cams.dto.CameraDto
 import javax.persistence.*
 
 
@@ -39,7 +39,7 @@ data class CameraEntity(
     private val records: Set<Record>? = null
 }
 
-fun CameraEntity.toDTO() = CameraDTO(
+fun CameraEntity.toDto() = CameraDto(
         id = this.id,
         name = this.name,
         ip = this.ip,
@@ -49,9 +49,9 @@ fun CameraEntity.toDTO() = CameraDTO(
         enabled = this.enabled,
         deleted = this.deleted)
 
-fun List<CameraEntity>.toDTO() = this.map { it.toDTO() }
+fun List<CameraEntity>.toDto() = this.map { it.toDto() }
 
-fun CameraDTO.toEntity() = CameraEntity(
+fun CameraDto.toEntity() = CameraEntity(
         id = this.id,
         name = this.name,
         ip = this.ip,

@@ -1,12 +1,12 @@
 package ru.vladislavsumin.cams.dto
 
-data class ServerInfoDTO(
+data class ServerInfoDto(
         val address: String
 ) {
     companion object {
-        fun fromByteArray(array: ByteArray): ServerInfoDTO {
+        fun fromByteArray(array: ByteArray): ServerInfoDto {
             val address = array.inputStream().bufferedReader().readLine()
-            return ServerInfoDTO(address)
+            return ServerInfoDto(address)
         }
     }
 

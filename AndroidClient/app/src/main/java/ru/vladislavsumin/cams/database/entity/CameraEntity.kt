@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.vladislavsumin.cams.dto.CameraDTO
+import ru.vladislavsumin.cams.dto.CameraDto
 import ru.vladislavsumin.cams.utils.SortedListDiff
 
 @Entity(tableName = "cams")
@@ -68,7 +68,7 @@ data class CameraEntity(
     }
 }
 
-fun CameraDTO.toEntity() = CameraEntity(
+fun CameraDto.toEntity() = CameraEntity(
         id = this.id,
         name = this.name,
         ip = this.ip,
@@ -79,9 +79,9 @@ fun CameraDTO.toEntity() = CameraEntity(
         deleted = this.deleted
 )
 
-fun List<CameraDTO>.toEntity() = this.map { it.toEntity() }
+fun List<CameraDto>.toEntity() = this.map { it.toEntity() }
 
-fun CameraEntity.toDTO() = CameraDTO(
+fun CameraEntity.toDTO() = CameraDto(
         id = this.id,
         name = this.name,
         ip = this.ip,
