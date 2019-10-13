@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import ru.vladislavsumin.cams.app.Injector
+import ru.vladislavsumin.cams.database.DatabaseUpdateState
 import ru.vladislavsumin.cams.database.entity.CameraEntity
 import ru.vladislavsumin.cams.domain.impl.CamsManager
 import ru.vladislavsumin.cams.domain.interfaces.CamsManagerI
@@ -33,7 +34,7 @@ class CamsPresenter : BasePresenter<CamsView>() {
                 .subscribeOnIo()
     }
 
-    fun observeDatabaseStatus(): Observable<CamsManager.DatabaseUpdateState> =
+    fun observeDatabaseStatus(): Observable<DatabaseUpdateState> =
             mCamsManager.observeDatabaseState()
 
     fun updateDatabase() {

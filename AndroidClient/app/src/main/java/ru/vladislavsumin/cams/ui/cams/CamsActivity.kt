@@ -11,6 +11,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_cams.*
 import ru.vladislavsumin.cams.R
+import ru.vladislavsumin.cams.database.DatabaseUpdateState
 import ru.vladislavsumin.cams.database.entity.CameraEntity
 import ru.vladislavsumin.cams.domain.impl.CamsManager
 import ru.vladislavsumin.cams.ui.ListAdapter
@@ -99,9 +100,9 @@ class CamsActivity : ToolbarActivity(), CamsView {
         mCamsAdapter.items = cams
     }
 
-    private fun showDatabaseUpdateState(state: CamsManager.DatabaseUpdateState) {
+    private fun showDatabaseUpdateState(state: DatabaseUpdateState) {
         mSnackbar = when (state) {
-            CamsManager.DatabaseUpdateState.UPDATED -> {
+            DatabaseUpdateState.UPDATED -> {
                 mSnackbar?.dismiss()
                 null
             }
@@ -111,20 +112,20 @@ class CamsActivity : ToolbarActivity(), CamsView {
         }
     }
 
-    private fun makeSnackbar(state: CamsManager.DatabaseUpdateState): Snackbar {
+    private fun makeSnackbar(state: DatabaseUpdateState): Snackbar {
         val text = when (state) {//TODO move to resources
-            CamsManager.DatabaseUpdateState.UPDATED -> throw RuntimeException("Unsupported state")
-            CamsManager.DatabaseUpdateState.UPDATING -> "Updating database"
-            CamsManager.DatabaseUpdateState.NOT_UPDATED -> "Database not updated"
-            CamsManager.DatabaseUpdateState.ERROR -> "Error on update database"
+            DatabaseUpdateState.UPDATED -> throw RuntimeException("Unsupported state")
+            DatabaseUpdateState.UPDATING -> "Updating database"
+            DatabaseUpdateState.NOT_UPDATED -> "Database not updated"
+            DatabaseUpdateState.ERROR -> "Error on update database"
         }
 
         val snackbar = Snackbar.make(cams_root_view, text, Snackbar.LENGTH_INDEFINITE)
 
-        if (state == CamsManager.DatabaseUpdateState.NOT_UPDATED)
+        if (state == DatabaseUpdateState.NOT_UPDATED)
             snackbar.setAction("Update") { mPresenter.updateDatabase() }
 
-        if (state == CamsManager.DatabaseUpdateState.ERROR)
+        if (state == DatabaseUpdateState.ERROR)
             snackbar.setAction("Retry") { mPresenter.updateDatabase() }
 
         //TODO make custom layout

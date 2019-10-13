@@ -5,10 +5,12 @@ import android.net.ConnectivityManager
 import dagger.Module
 import dagger.Provides
 import ru.vladislavsumin.cams.database.dao.CameraDao
+import ru.vladislavsumin.cams.database.dao.RecordDao
 import ru.vladislavsumin.cams.domain.impl.*
 import ru.vladislavsumin.cams.domain.interfaces.*
 import ru.vladislavsumin.cams.network.api.AboutApi
 import ru.vladislavsumin.cams.network.api.CamsApi
+import ru.vladislavsumin.cams.network.api.RecordsApiV2
 import javax.inject.Singleton
 
 @Module
@@ -41,5 +43,11 @@ class DomainModule {
     @Singleton
     fun provideCamsManager(cameraDao: CameraDao, camsApi: CamsApi): CamsManagerI {
         return CamsManager(cameraDao, camsApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecordManager(recordDao: RecordDao, recordsApi: RecordsApiV2): RecordManagerI {
+        return RecordManager(recordDao, recordsApi)
     }
 }

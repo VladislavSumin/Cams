@@ -39,12 +39,14 @@ class RecordManager @Autowired constructor(
         Files.move(record, getPath(save.id))
     }
 
-    fun getAll(): List<RecordEntity> = recordRepository.findAll()
+    fun getAllSorted(): List<RecordEntity> = recordRepository.findAll()
             .sortedBy { it.timestamp }
             .reversed() //TODO replace to sql sort
 
+    fun getAll(): List<RecordEntity> = recordRepository.findAll().toList()
+
     fun getInterval(begin: Date, period: Long): Iterable<RecordEntity> {
-        return getAll()
+        return getAllSorted()
                 .filter { it.timestamp > begin.time && it.timestamp < begin.time + period }
     }
 
