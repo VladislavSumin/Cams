@@ -101,9 +101,9 @@ class CamsManager(
      */
     @WorkerThread
     private fun dispatchChanges(diff: SortedListDiff.Difference<CameraEntity>) {
-        diff.deleted.forEach(mRepository::delete)
-        diff.added.forEach(mRepository::insert)
-        diff.modified.forEach(mRepository::update)
+        mRepository.delete(diff.deleted)
+        mRepository.insert(diff.added)
+        mRepository.update(diff.modified)
     }
 
     //TODO move to other location

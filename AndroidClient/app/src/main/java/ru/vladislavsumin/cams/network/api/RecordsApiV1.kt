@@ -6,9 +6,9 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import ru.vladislavsumin.cams.entity.Record
 
-interface RecordsApi {
+interface RecordsApiV1 {
     @GET("api/v1/records")
-    fun getAll(): Single<List<Record>>//TODO
+    fun getAll(): Single<List<Record>>
 
     @POST("api/v1/records/save")
     fun save(@Query("id") id: Long, @Query("name") name: String?): Single<Record>

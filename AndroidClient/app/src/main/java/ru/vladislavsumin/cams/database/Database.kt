@@ -5,11 +5,14 @@ import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import ru.vladislavsumin.cams.database.dao.CameraDao
+import ru.vladislavsumin.cams.database.dao.RecordDao
 import ru.vladislavsumin.cams.database.entity.CameraEntity
+import ru.vladislavsumin.cams.database.entity.RecordEntity
 import ru.vladislavsumin.core.utils.tag
 
 @androidx.room.Database(entities = [
-    CameraEntity::class
+    CameraEntity::class,
+    RecordEntity::class
 ], version = 1)
 abstract class Database : RoomDatabase() {
     companion object {
@@ -24,4 +27,5 @@ abstract class Database : RoomDatabase() {
     }
 
     abstract fun getCameraDao(): CameraDao
+    abstract fun getRecordDao(): RecordDao
 }

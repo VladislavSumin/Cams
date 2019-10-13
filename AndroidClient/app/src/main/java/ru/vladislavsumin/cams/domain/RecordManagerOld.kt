@@ -5,7 +5,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import ru.vladislavsumin.cams.entity.Record
-import ru.vladislavsumin.cams.network.api.RecordsApi
+import ru.vladislavsumin.cams.network.api.RecordsApiV1
 import ru.vladislavsumin.cams.storage.CredentialStorage
 import ru.vladislavsumin.core.utils.subscribeOnIo
 import javax.inject.Inject
@@ -13,9 +13,9 @@ import javax.inject.Singleton
 
 @Singleton
 @Deprecated("write new one")
-class RecordManager @Inject constructor(
+class RecordManagerOld @Inject constructor(
         private val mCredentialStorage: CredentialStorage,
-        private val recordsApi: RecordsApi
+        private val recordsApi: RecordsApiV1
 ) {
     private val mRecords: BehaviorSubject<List<Record>> = BehaviorSubject.createDefault(emptyList())
 

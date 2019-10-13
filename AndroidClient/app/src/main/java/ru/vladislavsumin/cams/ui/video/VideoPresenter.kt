@@ -8,9 +8,9 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import ru.vladislavsumin.cams.app.Injector
-import ru.vladislavsumin.cams.domain.RecordManager
+import ru.vladislavsumin.cams.domain.RecordManagerOld
 import ru.vladislavsumin.cams.entity.Record
-import ru.vladislavsumin.cams.network.api.RecordsApi
+import ru.vladislavsumin.cams.network.api.RecordsApiV1
 import ru.vladislavsumin.core.mvp.BasePresenter
 import ru.vladislavsumin.core.utils.*
 import javax.inject.Inject
@@ -22,10 +22,10 @@ class VideoPresenter : BasePresenter<VideoView>() {
     }
 
     @Inject
-    lateinit var mRecordsApi: RecordsApi
+    lateinit var mRecordsApi: RecordsApiV1
 
     @Inject
-    lateinit var mRecordManager: RecordManager
+    lateinit var mRecordManager: RecordManagerOld
 
     private var saveDisposable: Disposable? = null
 

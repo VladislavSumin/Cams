@@ -51,15 +51,15 @@ class RecordsApiV2 {
     fun save(
             @RequestParam id: Long,
             @RequestParam(required = false) name: String?
-    ): RecordEntity {
-        return recordManager.save(id, name)
+    ): RecordDto {
+        return recordManager.save(id, name).toDto()
     }
 
     @PostMapping("/delete")
     fun delete(
             @RequestParam id: Long
-    ): RecordEntity {
-        return recordManager.delete(id)
+    ): RecordDto {
+        return recordManager.delete(id).toDto()
     }
 
     @Component
