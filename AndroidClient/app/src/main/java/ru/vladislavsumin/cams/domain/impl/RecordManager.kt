@@ -1,5 +1,6 @@
 package ru.vladislavsumin.cams.domain.impl
 
+import android.net.Uri
 import android.util.Log
 import androidx.annotation.WorkerThread
 import io.reactivex.Completable
@@ -15,6 +16,7 @@ import ru.vladislavsumin.cams.database.entity.RecordEntity
 import ru.vladislavsumin.cams.database.entity.toEntity
 import ru.vladislavsumin.cams.domain.interfaces.RecordManagerI
 import ru.vladislavsumin.cams.network.api.RecordsApiV2
+import ru.vladislavsumin.cams.storage.CredentialStorage
 import ru.vladislavsumin.cams.utils.SortedListDiff
 import ru.vladislavsumin.core.utils.observeOnComputation
 import ru.vladislavsumin.core.utils.observeOnIo
@@ -23,7 +25,8 @@ import ru.vladislavsumin.core.utils.tag
 
 class RecordManager(
         private val mRepository: RecordDao,
-        private val mApi: RecordsApiV2
+        private val mApi: RecordsApiV2,
+        private val mCredentialStorage: CredentialStorage
 ) : RecordManagerI {
     companion object {
         private val TAG = tag<RecordManager>()
@@ -79,6 +82,11 @@ class RecordManager(
     }
 
     override fun observeDatabaseState(): Observable<DatabaseUpdateState> = mUpdateStateObservable
+
+    override fun getRecordUri(record: RecordEntity): Uri = getRecordUri(record.id)
+
+    override fun getRecordUri(id: Long): Uri =
+            Uri.parse("${mCredentialStorage.serverAddress}/api/v1/records/record/$id")
 
     //***********************************************************************//
     //                          Support functions                            //

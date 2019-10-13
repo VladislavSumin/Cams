@@ -6,7 +6,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import ru.vladislavsumin.cams.database.DatabaseUpdateState
 import ru.vladislavsumin.cams.database.entity.CameraEntity
-import ru.vladislavsumin.cams.domain.impl.CamsManager
 
 interface CamsManagerI {
     fun observeAll(): Flowable<List<CameraEntity>>

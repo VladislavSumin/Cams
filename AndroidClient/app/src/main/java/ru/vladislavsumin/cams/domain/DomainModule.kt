@@ -11,6 +11,7 @@ import ru.vladislavsumin.cams.domain.interfaces.*
 import ru.vladislavsumin.cams.network.api.AboutApi
 import ru.vladislavsumin.cams.network.api.CamsApi
 import ru.vladislavsumin.cams.network.api.RecordsApiV2
+import ru.vladislavsumin.cams.storage.CredentialStorage
 import javax.inject.Singleton
 
 @Module
@@ -47,7 +48,8 @@ class DomainModule {
 
     @Provides
     @Singleton
-    fun provideRecordManager(recordDao: RecordDao, recordsApi: RecordsApiV2): RecordManagerI {
-        return RecordManager(recordDao, recordsApi)
+    fun provideRecordManager(recordDao: RecordDao, recordsApi: RecordsApiV2,
+                             credentialStorage: CredentialStorage): RecordManagerI {
+        return RecordManager(recordDao, recordsApi, credentialStorage)
     }
 }
