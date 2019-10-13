@@ -5,7 +5,4 @@ import ru.vladislavsumin.core.mvp.BaseView
 
 interface CamDetailsView : BaseView {
     fun setButtonsEnabled(enabled: Boolean)
-
-    fun finishWithSaveResult(camera: CameraEntity)
-    fun finishWithDeleteResult(camera: CameraEntity)
 }

@@ -19,9 +19,6 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
         private const val MENU_SAVE_ITEM = 1
         private const val MENU_DELETE_ITEM = 2
 
-        const val RESULT_SAVE_OR_UPDATE = 1
-        const val RESULT_DELETE = 2
-
         const val EXTRA_CAM_DETAILS = "extra_cam_details"
 
         fun getLaunchIntent(context: Context, camera: CameraEntity? = null): Intent {
@@ -95,16 +92,6 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
             mDeleteBtn?.isEnabled = false
             tintMenuItemIcon(R.color.grey, mDeleteBtn)
         }
-    }
-
-    override fun finishWithSaveResult(camera: CameraEntity) {
-        setResult(RESULT_SAVE_OR_UPDATE, Intent().putExtra(EXTRA_CAM_DETAILS, camera))
-        finish()
-    }
-
-    override fun finishWithDeleteResult(camera: CameraEntity) {
-        setResult(RESULT_DELETE, Intent().putExtra(EXTRA_CAM_DETAILS, camera))
-        finish()
     }
 
     private fun setCamera(camera: CameraEntity) {

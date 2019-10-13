@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_cams.*
 import ru.vladislavsumin.cams.R
 import ru.vladislavsumin.cams.database.entity.CameraEntity
 import ru.vladislavsumin.cams.domain.impl.CamsManager
-import ru.vladislavsumin.cams.ui.MutableListAdapter
+import ru.vladislavsumin.cams.ui.ListAdapter
 import ru.vladislavsumin.cams.ui.ToolbarActivity
 import ru.vladislavsumin.cams.ui.cams.details.CamDetailActivity
 import ru.vladislavsumin.core.utils.observeOnMainThread
@@ -104,7 +104,7 @@ class CamsActivity : ToolbarActivity(), CamsView {
 
     private fun showList(cams: List<CameraEntity>) {
         cams_list.visibility = View.VISIBLE
-        mCamsAdapter.items = cams as MutableList //TODO FIX
+        mCamsAdapter.items = cams
     }
 
     private fun showDatabaseUpdateState(state: CamsManager.DatabaseUpdateState) {
@@ -140,29 +140,7 @@ class CamsActivity : ToolbarActivity(), CamsView {
         return snackbar
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == 0) return
-
-        val camera = data!!.getParcelableExtra<CameraEntity>(CamDetailActivity.EXTRA_CAM_DETAILS)!!
-
-        if (resultCode == CamDetailActivity.RESULT_SAVE_OR_UPDATE)
-            when (requestCode) {
-                REQUEST_CODE_CAMERA_DETAILS -> {
-                    mCamsAdapter.updateItemBy(camera) { it.id == camera.id }
-                }
-
-                REQUEST_CODE_CAMERA_ADD_NEW -> {
-                    mCamsAdapter.addItem(camera)
-                }
-            }
-
-        if (resultCode == CamDetailActivity.RESULT_DELETE)
-            mCamsAdapter.removeItemBy { it.id == camera.id }
-    }
-
-    private inner class CamsListAdapter : MutableListAdapter<CameraEntity, CamsViewHolder>(CamsViewHolder.Companion) {
+    private inner class CamsListAdapter : ListAdapter<CameraEntity, CamsViewHolder>(CamsViewHolder.Companion) {
 
         override fun onBindViewHolder(holder: CamsViewHolder, position: Int) {
             super.onBindViewHolder(holder, position)

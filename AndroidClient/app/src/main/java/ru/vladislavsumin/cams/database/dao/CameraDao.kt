@@ -27,6 +27,15 @@ interface CameraDao {
     @Delete
     fun delete(camera: CameraEntity)
 
+    @Insert
+    fun observeInsert(camera: CameraEntity): Completable
+
+    @Update
+    fun observeUpdate(camera: CameraEntity): Completable
+
+    @Delete
+    fun observeDelete(camera: CameraEntity): Completable
+
     @Query("DELETE FROM cams")
     fun deleteAll(): Completable
 }

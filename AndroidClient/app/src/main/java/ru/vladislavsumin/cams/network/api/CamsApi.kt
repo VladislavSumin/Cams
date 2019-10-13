@@ -14,5 +14,5 @@ interface CamsApi {
     fun delete(@Query("id") id: Long): Completable
 
     @PUT("api/v1/cams")
-    fun add(@Body cam: CameraDTO): Completable
+    fun add(@Body cam: CameraDTO): Single<CameraDTO>
 }

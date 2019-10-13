@@ -10,6 +10,7 @@ import io.reactivex.rxkotlin.Singles
 import io.reactivex.subjects.BehaviorSubject
 import ru.vladislavsumin.cams.database.dao.CameraDao
 import ru.vladislavsumin.cams.database.entity.CameraEntity
+import ru.vladislavsumin.cams.database.entity.toDTO
 import ru.vladislavsumin.cams.database.entity.toEntity
 import ru.vladislavsumin.cams.domain.interfaces.CamsManagerI
 import ru.vladislavsumin.cams.network.api.CamsApi
@@ -72,9 +73,28 @@ class CamsManager(
 
     override fun observeDatabaseState(): Observable<DatabaseUpdateState> = mUpdateStateObservable
 
+    override fun addOrModify(camera: CameraEntity): Single<CameraEntity> {
+        return mApi.add(camera.toDTO())
+                .map { it.toEntity() }
+                .flatMap(this::updateDatabaseEntity)
+
+    }
+
+    override fun delete(camera: CameraEntity): Completable {
+        return mApi.delete(camera.id)
+                .andThen(mRepository.observeUpdate(camera.copy(deleted = true)).onErrorComplete())
+    }
+
     //***********************************************************************//
     //                          Support functions                            //
     //***********************************************************************//
+
+    private fun updateDatabaseEntity(camera: CameraEntity): Single<CameraEntity> {
+        return mRepository.getById(camera.id)
+                .flatMap { mRepository.observeUpdate(camera).andThen(Single.just(camera)) }
+                .onErrorResumeNext { mRepository.observeInsert(camera).andThen(Single.just(camera)) }
+
+    }
 
     /**
      * Dispatch changes from diff to database
