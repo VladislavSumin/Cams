@@ -8,11 +8,9 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler
 import ru.vladislavsumin.cams.domain.RecordManager
 import ru.vladislavsumin.cams.dto.RecordDto
-import ru.vladislavsumin.cams.entity.RecordEntity
 import ru.vladislavsumin.cams.entity.toDto
 import java.io.IOException
 import java.nio.file.Path
-import java.util.*
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse

@@ -30,7 +30,7 @@ class RecordsApiV1 {
             @RequestParam(name = "date", required = false) date: Date?,
             @RequestParam(name = "period", required = false) period: Long?
     ): Iterable<RecordEntity> {
-        return if (date == null) recordManager.getAll()
+        return if (date == null) recordManager.getAllSorted()
         else recordManager.getInterval(date, period ?: 24 * 60 * 60 * 1000)
     }
 
