@@ -7,14 +7,21 @@ import ru.vladislavsumin.cams.dto.CameraDto
 import ru.vladislavsumin.cams.dto.RecordDto
 import ru.vladislavsumin.cams.utils.SortedListDiff
 
-@Entity(tableName = "records", foreignKeys = [
-    ForeignKey(
-            entity = CameraEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["camera_id"],
-            onDelete = SET_NULL
-    )
-])
+@Entity(tableName = "records",
+        foreignKeys = [
+            ForeignKey(
+                    entity = CameraEntity::class,
+                    parentColumns = ["id"],
+                    childColumns = ["camera_id"],
+                    onDelete = SET_NULL
+            )
+        ],
+        indices = [
+            Index("id"),
+            Index("camera_id")
+        ]
+
+)
 data class RecordEntity(
         @PrimaryKey
         val id: Long = 0L,

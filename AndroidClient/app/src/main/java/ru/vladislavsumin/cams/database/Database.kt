@@ -13,7 +13,7 @@ import ru.vladislavsumin.core.utils.tag
 @androidx.room.Database(entities = [
     CameraEntity::class,
     RecordEntity::class
-], version = 1)
+], exportSchema = false, version = 1)
 abstract class Database : RoomDatabase() {
     companion object {
         private const val DATABASE_FILE = "database"

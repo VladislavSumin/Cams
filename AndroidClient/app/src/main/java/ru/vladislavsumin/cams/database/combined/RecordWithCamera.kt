@@ -15,4 +15,7 @@ data class RecordWithCamera(
                 entity = CameraEntity::class
         )
         val cameraList: List<CameraEntity?>
-)
+){
+    val camera:CameraEntity?
+    get() = cameraList[0]
+}
