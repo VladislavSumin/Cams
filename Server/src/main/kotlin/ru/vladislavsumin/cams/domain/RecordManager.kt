@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import ru.vladislavsumin.cams.api.RecourseNotFoundException
 import ru.vladislavsumin.cams.entity.CameraEntity
-import ru.vladislavsumin.cams.entity.Record
+import ru.vladislavsumin.cams.entity.RecordEntity
 import ru.vladislavsumin.cams.repository.RecordRepository
 import ru.vladislavsumin.cams.utils.logger
 import java.nio.file.Files
@@ -30,7 +30,7 @@ class RecordManager @Autowired constructor(
 
     fun add(record: Path, camera: CameraEntity, timestamp: Long) {
         val size = record.toFile().length()
-        val record1 = Record(
+        val record1 = RecordEntity(
                 timestamp = timestamp,
                 fileSize = size,
                 camera = camera
@@ -39,11 +39,11 @@ class RecordManager @Autowired constructor(
         Files.move(record, getPath(save.id))
     }
 
-    fun getAll(): Iterable<Record> = recordRepository.findAll()
+    fun getAll(): List<RecordEntity> = recordRepository.findAll()
             .sortedBy { it.timestamp }
             .reversed() //TODO replace to sql sort
 
-    fun getInterval(begin: Date, period: Long): Iterable<Record> {
+    fun getInterval(begin: Date, period: Long): Iterable<RecordEntity> {
         return getAll()
                 .filter { it.timestamp > begin.time && it.timestamp < begin.time + period }
     }
@@ -52,7 +52,7 @@ class RecordManager @Autowired constructor(
         return Paths.get(rootPath).resolve("records").resolve("$id.mp4")
     }
 
-    fun save(id: Long, name: String?): Record {
+    fun save(id: Long, name: String?): RecordEntity {
         val record = recordRepository.findById(id)
         if (!record.isPresent) throw RecourseNotFoundException()
         val copy = record.get().copy(keepForever = true, name = name)
@@ -60,7 +60,7 @@ class RecordManager @Autowired constructor(
         return copy
     }
 
-    fun delete(id: Long): Record {
+    fun delete(id: Long): RecordEntity {
         val record = recordRepository.findById(id)
         if (!record.isPresent) throw RecourseNotFoundException()
         val copy = record.get().copy(keepForever = false, name = null)

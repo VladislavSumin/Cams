@@ -36,7 +36,7 @@ data class CameraEntity(
 ) {
     @OneToMany(mappedBy = "camera", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.NO_ACTION) //TODO verify
-    private val records: Set<Record>? = null
+    private val records: Set<RecordEntity>? = null
 }
 
 fun CameraEntity.toDto() = CameraDto(

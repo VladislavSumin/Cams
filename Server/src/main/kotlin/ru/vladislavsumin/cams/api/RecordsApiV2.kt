@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler
 import ru.vladislavsumin.cams.domain.RecordManager
-import ru.vladislavsumin.cams.entity.Record
+import ru.vladislavsumin.cams.dto.RecordDto
+import ru.vladislavsumin.cams.entity.RecordEntity
+import ru.vladislavsumin.cams.entity.toDto
 import java.io.IOException
 import java.nio.file.Path
 import java.util.*
@@ -16,8 +18,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@RequestMapping("api/v1/records")
-class RecordsApi {
+@RequestMapping("api/v2/records")
+class RecordsApiV2 {
     @Autowired
     lateinit var recordManager: RecordManager
 
@@ -27,11 +29,8 @@ class RecordsApi {
     @GetMapping
     @ResponseBody
     fun getList(
-            @RequestParam(name = "date", required = false) date: Date?,
-            @RequestParam(name = "period", required = false) period: Long?
-    ): Iterable<Record> {
-        return if (date == null) recordManager.getAll()
-        else recordManager.getInterval(date, period ?: 24 * 60 * 60 * 1000)
+    ): List<RecordDto> {
+        return recordManager.getAll().toDto()
     }
 
     @GetMapping("/record/{id}")
@@ -52,14 +51,14 @@ class RecordsApi {
     fun save(
             @RequestParam id: Long,
             @RequestParam(required = false) name: String?
-    ): Record {
+    ): RecordEntity {
         return recordManager.save(id, name)
     }
 
     @PostMapping("/delete")
     fun delete(
             @RequestParam id: Long
-    ): Record {
+    ): RecordEntity {
         return recordManager.delete(id)
     }
 
