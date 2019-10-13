@@ -8,7 +8,7 @@
 
 # Server local files
 application.properties
-database.mv.db
+database.mv.db*
 /tmp/
 /records/
 /logs/
