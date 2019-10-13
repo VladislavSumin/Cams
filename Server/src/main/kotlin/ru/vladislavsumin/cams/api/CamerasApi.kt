@@ -20,8 +20,8 @@ class CamerasApi {
     }
 
     @PutMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun add(@RequestBody camera: CameraDTO) {
-        cameraManager.save(camera.toEntity())
+    fun add(@RequestBody camera: CameraDTO): CameraDTO {
+        return cameraManager.save(camera.toEntity()).toDTO()
     }
 
     @DeleteMapping

@@ -18,8 +18,8 @@ class CameraManager {
     fun getEnabled() = cameraRepository.findAllByDeletedFalseAndEnabledTrue()
 
 
-    fun save(camera: CameraEntity) {
-        cameraRepository.save(camera)
+    fun save(camera: CameraEntity):CameraEntity {
+        return cameraRepository.save(camera)
     }
 
     fun delete(id: Long): Boolean {
