@@ -7,11 +7,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import ru.vladislavsumin.cams.R
+import ru.vladislavsumin.cams.database.combined.RecordWithCamera
 import ru.vladislavsumin.cams.entity.Record
 import ru.vladislavsumin.core.ui.recyclerview.RWBaseViewHolder
 import java.text.SimpleDateFormat
 
-class VideoViewHolder private constructor(itemView: View) : RWBaseViewHolder<Record>(itemView) {
+class VideoViewHolder private constructor(itemView: View) : RWBaseViewHolder<RecordWithCamera>(itemView) {
     companion object : ViewHolderFactory<VideoViewHolder> {
         private const val LAYOUT = R.layout.list_videos_element
 
@@ -32,24 +33,24 @@ class VideoViewHolder private constructor(itemView: View) : RWBaseViewHolder<Rec
 
     fun setSelected(selected: Boolean) {
         itemView.setBackgroundColor(
-            itemView.context.getColor(
-                if (selected) R.color.grey else android.R.color.white
-            )
+                itemView.context.getColor(
+                        if (selected) R.color.grey else android.R.color.white
+                )
         )
     }
 
-    override fun bind(item: Record) {
-        saveLayout.visibility = if (item.keepForever || item.name != null) View.VISIBLE else View.GONE
-        iconSaved.visibility = if (item.keepForever) View.VISIBLE else View.GONE
+    override fun bind(item: RecordWithCamera) {
+        saveLayout.visibility = if (item.record.keepForever || item.record.name != null) View.VISIBLE else View.GONE
+        iconSaved.visibility = if (item.record.keepForever) View.VISIBLE else View.GONE
 
-        recordName.text = item.name ?: "<no name>"
+        recordName.text = item.record.name ?: "<no name>"
 
-        val textColor = if (item.name != null) R.color.black else R.color.grey
+        val textColor = if (item.record.name != null) R.color.black else R.color.grey
         recordName.setTextColor(recordName.context.getColor(textColor))
 
-        cameraName.text = item.camera!!.name
-        cameraName.textSize = if (item.keepForever) 20f else 22f
+        cameraName.text = item.camera?.name //TODO fix
+        cameraName.textSize = if (item.record.keepForever) 20f else 22f
 
-        date.text = dataFormat.format(item.timestamp)
+        date.text = dataFormat.format(item.record.timestamp)
     }
 }

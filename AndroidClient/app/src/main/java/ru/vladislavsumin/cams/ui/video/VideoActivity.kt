@@ -15,8 +15,8 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import kotlinx.android.synthetic.main.activity_video.*
 import ru.vladislavsumin.cams.R
-import ru.vladislavsumin.cams.entity.Record
-import ru.vladislavsumin.cams.ui.MutableListAdapter
+import ru.vladislavsumin.cams.database.combined.RecordWithCamera
+import ru.vladislavsumin.cams.ui.ListAdapter
 import ru.vladislavsumin.cams.ui.ToolbarActivity
 import ru.vladislavsumin.core.utils.observeOnMainThread
 import java.util.*
@@ -34,7 +34,7 @@ class VideoActivity : ToolbarActivity(), VideoView {
 
     private val player = VideoFragment()
 
-    private lateinit var mSelectedRecord: Record //TODO change
+    private lateinit var mSelectedRecord: RecordWithCamera //TODO change
 
     private lateinit var mSaveVideoDialog: SaveVideoDialog
 
@@ -107,8 +107,8 @@ class VideoActivity : ToolbarActivity(), VideoView {
         }
     }
 
-    override fun setVideoList(videos: List<Record>) {
-        adapter.items = videos as MutableList
+    override fun setVideoList(videos: List<RecordWithCamera>) {
+        adapter.items = videos
     }
 
     override fun playVideo(uri: Uri) {
@@ -123,29 +123,25 @@ class VideoActivity : ToolbarActivity(), VideoView {
         mSaveVideoDialog.setState(SaveVideoDialog.State.Edit)
     }
 
-    override fun updateSavedRecordListElement(record: Record) {
-        adapter.updateItemBy(record) { it.id == record.id }
-    }
-
-    private fun initSaveDialog(record: Record) {
+    private fun initSaveDialog(record: RecordWithCamera) {
         mSelectedRecord = record
-        mSaveVideoDialog = SaveVideoDialog(this, record).apply {
+        mSaveVideoDialog = SaveVideoDialog(this, record.record).apply {
             setOnCancelClickListener {
                 mPresenter.onCancelSaveDialog()
                 dismiss()
             }
             setOnSaveClickListener {
-                mPresenter.onSaveRecord(mSelectedRecord.id, getName())
+                mPresenter.onSaveRecord(mSelectedRecord.record.id, getName())
                 setState(SaveVideoDialog.State.Saving)
             }
             setOnClickDeleteListener {
-                mPresenter.onDeleteRecord(mSelectedRecord.id)
+                mPresenter.onDeleteRecord(mSelectedRecord.record.id)
                 setState(SaveVideoDialog.State.Deleting)
             }
         }
     }
 
-    private inner class Adapter : MutableListAdapter<Record, VideoViewHolder>(VideoViewHolder.Companion) {
+    private inner class Adapter : ListAdapter<RecordWithCamera, VideoViewHolder>(VideoViewHolder.Companion) {
         private var selectedItemPos: Int = -1
 
         override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {

@@ -10,10 +10,12 @@ import androidx.annotation.UiThread
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton
 import com.google.android.material.textfield.TextInputLayout
 import ru.vladislavsumin.cams.R
+import ru.vladislavsumin.cams.database.combined.RecordWithCamera
+import ru.vladislavsumin.cams.database.entity.RecordEntity
 import ru.vladislavsumin.cams.entity.Record
 import ru.vladislavsumin.cams.ui.view.BaseDialog
 
-class SaveVideoDialog(context: Context, record: Record) : BaseDialog(context) {
+class SaveVideoDialog(context: Context, record: RecordEntity) : BaseDialog(context) {
     companion object {
         private const val LAYOUT = R.layout.dialog_save
     }

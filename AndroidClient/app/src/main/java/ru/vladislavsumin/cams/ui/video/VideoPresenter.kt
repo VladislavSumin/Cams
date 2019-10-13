@@ -8,9 +8,8 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import ru.vladislavsumin.cams.app.Injector
-import ru.vladislavsumin.cams.domain.RecordManagerOld
+import ru.vladislavsumin.cams.database.combined.RecordWithCamera
 import ru.vladislavsumin.cams.domain.interfaces.RecordManagerI
-import ru.vladislavsumin.cams.entity.Record
 import ru.vladislavsumin.cams.network.api.RecordsApiV1
 import ru.vladislavsumin.core.mvp.BasePresenter
 import ru.vladislavsumin.core.utils.*
@@ -26,9 +25,6 @@ class VideoPresenter : BasePresenter<VideoView>() {
     lateinit var mRecordsApi: RecordsApiV1
 
     @Inject
-    lateinit var mRecordManagerOld: RecordManagerOld
-
-    @Inject
     lateinit var mRecordManager: RecordManagerI
 
     private var saveDisposable: Disposable? = null
@@ -42,41 +38,35 @@ class VideoPresenter : BasePresenter<VideoView>() {
 
     init {
         Injector.inject(this)
-        updateVideoList()
     }
 
-    fun onSelectRecord(record: Record) {
-        viewState.playVideo(mRecordManagerOld.getRecordUri(record))
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        mRecordManager.fullUpdateDatabaseAsync()
     }
 
-    fun observeRecordsToShow(): Observable<List<Record>> {
+    fun onSelectRecord(record: RecordWithCamera) {
+        viewState.playVideo(mRecordManager.getRecordUri(record.record))
+    }
+
+    fun observeRecordsToShow(): Observable<List<RecordWithCamera>> {
         return Observable.combineLatest(
                 mShowOnlySaved,
                 mDateFilter,
-                BiFunction<Boolean, Long, Observable<List<Record>>> { showOnlySaved, dateFilter ->
-                    mRecordManagerOld.observeRecords()
+                BiFunction<Boolean, Long, Observable<List<RecordWithCamera>>> { showOnlySaved, dateFilter ->
+                    mRecordManager.observeAllWithCamera().toObservable()
                             .map { list ->
                                 list.filter {
-                                    if (showOnlySaved && !it.keepForever) return@filter false
+                                    if (showOnlySaved && !it.record.keepForever) return@filter false
                                     if (dateFilter == 0L) return@filter true
-                                    else return@filter it.timestamp in dateFilter..(dateFilter + 24 * 60 * 60 * 1000)
+                                    else return@filter it.record.timestamp in dateFilter..(dateFilter + 24 * 60 * 60 * 1000)
                                 }
                             }
+                    //TODO fix rx chain!
                 }
         ).flatMap {
             it.subscribeOn(Schedulers.computation())
         }
-    }
-
-    private fun updateVideoList() {
-        mRecordManagerOld.updateRecords()
-                .observeOnMainThread()
-                .subscribe({
-                    viewState.showToast("Updated")
-                }, {
-                    viewState.showToast("Error on update")
-                    Log.d(TAG, "Error on data get", it)
-                }).autoDispose()
     }
 
     fun onCancelSaveDialog() {
@@ -91,7 +81,7 @@ class VideoPresenter : BasePresenter<VideoView>() {
                 .observeOnMainThread()
                 .subscribe({
                     viewState.dismissSaveVideoDialog()
-                    viewState.updateSavedRecordListElement(it)
+//                    viewState.updateSavedRecordListElement(it)//TODO !!!!!!!!!!!!!!!
                 }, {
                     //TODO add simple error logging class
                     Log.d(TAG, "error on save record", it)
@@ -107,7 +97,7 @@ class VideoPresenter : BasePresenter<VideoView>() {
                 .observeOnMainThread()
                 .subscribe({
                     viewState.dismissSaveVideoDialog()
-                    viewState.updateSavedRecordListElement(it)
+//                    viewState.updateSavedRecordListElement(it) //TODO !!!!!!!!!!!!!!!!!!
                 }, {
                     Log.d(TAG, "error on save record", it)
                     viewState.stopSaveVideoDialogAnimation()
