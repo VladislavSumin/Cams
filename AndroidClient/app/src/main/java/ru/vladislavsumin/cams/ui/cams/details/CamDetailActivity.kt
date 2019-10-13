@@ -10,6 +10,7 @@ import ru.vladislavsumin.cams.R
 import ru.vladislavsumin.cams.database.entity.CameraEntity
 import ru.vladislavsumin.cams.ui.ToolbarActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.google.android.material.textfield.TextInputLayout
 
 
 class CamDetailActivity : ToolbarActivity(), CamDetailsView {
@@ -36,7 +37,6 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
     @InjectPresenter
     lateinit var mPresenter: CamDetailsPresenter
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(LAYOUT)
         super.onCreate(savedInstanceState)
@@ -49,16 +49,16 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
         super.onCreateOptionsMenu(menu)
 
         if (camera != null) {
-            mDeleteBtn = menu.add(Menu.NONE, MENU_DELETE_ITEM, Menu.NONE, getString(R.string.delete))
-            mDeleteBtn!!
-                .setIcon(R.drawable.ic_delete)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+            mDeleteBtn = menu.add(Menu.NONE, MENU_DELETE_ITEM, Menu.NONE, getString(R.string.delete)).apply {
+                setIcon(R.drawable.ic_delete)
+                setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+            }
         }
 
-        mSaveBtn = menu.add(Menu.NONE, MENU_SAVE_ITEM, Menu.NONE, R.string.save)
-        mSaveBtn
-            .setIcon(R.drawable.ic_save)
-            .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        mSaveBtn = menu.add(Menu.NONE, MENU_SAVE_ITEM, Menu.NONE, R.string.save).apply {
+            setIcon(R.drawable.ic_save)
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        }
 
         return true
     }
@@ -67,14 +67,13 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
         return when (item.itemId) {
             MENU_SAVE_ITEM -> {
                 if (verifyCamera()) mPresenter.onClickSave(getCamera())
-                return true
+                true
             }
             MENU_DELETE_ITEM -> {
                 mPresenter.onClickDelete(camera!!)
-                return true
+                true
             }
             else -> super.onOptionsItemSelected(item)
-
         }
     }
 
@@ -103,49 +102,30 @@ class CamDetailActivity : ToolbarActivity(), CamDetailsView {
     }
 
     private fun verifyCamera(): Boolean {
-        var result = true
+        return verifyField(cam_name) and
+                verifyField(cam_ip_address) and
+                verifyField(cam_port) and
+                verifyField(cam_login)
+    }
 
-        //TODO move to string resources
-        //TODO need refactor
-        if (cam_name.editText!!.text.toString().isEmpty()) {
-            result = false
-            cam_name.error = "Name must be not empty"
+    private fun verifyField(text: TextInputLayout): Boolean {
+        return if (text.editText!!.text.toString().isEmpty()) {
+            text.error = getString(R.string.field_must_be_not_empty)
+            false
         } else {
-            cam_name.error = null
+            text.error = null
+            true
         }
-
-        if (cam_ip_address.editText!!.text.toString().isEmpty()) {
-            result = false
-            cam_ip_address.error = "IP address must be not empty"
-        } else {
-            cam_ip_address.error = null
-        }
-
-        if (cam_port.editText!!.text.toString().isEmpty()) {
-            result = false
-            cam_port.error = "port must be not empty"
-        } else {
-            cam_port.error = null
-        }
-
-        if (cam_login.editText!!.text.toString().isEmpty()) {
-            result = false
-            cam_login.error = "login must be not empty"
-        } else {
-            cam_login.error = null
-        }
-
-        return result
     }
 
     private fun getCamera(): CameraEntity {
         return (this.camera ?: CameraEntity())
-            .copy(
-                name = cam_name.editText!!.text.toString(),
-                ip = cam_ip_address.editText!!.text.toString(),
-                port = cam_port.editText!!.text.toString().toInt(),
-                login = cam_login.editText!!.text.toString(),
-                password = cam_password.editText!!.text.toString()
-            )
+                .copy(
+                        name = cam_name.editText!!.text.toString(),
+                        ip = cam_ip_address.editText!!.text.toString(),
+                        port = cam_port.editText!!.text.toString().toInt(),
+                        login = cam_login.editText!!.text.toString(),
+                        password = cam_password.editText!!.text.toString()
+                )
     }
 }

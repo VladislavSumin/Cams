@@ -28,5 +28,6 @@
     <string name="records">Records</string>
     <string name="network_discovery">Network discovery:</string>
     <string name="disabled">disabled</string>
-    <string name="delited">delited</string>
+    <string name="deleted">deleted</string>
+    <string name="field_must_be_not_empty">Field must be not empty</string>
 </resources>

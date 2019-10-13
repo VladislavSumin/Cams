@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -27,8 +26,6 @@ class CamsActivity : ToolbarActivity(), CamsView {
         private const val LAYOUT = R.layout.activity_cams
 
         private const val MENU_ADD_ITEM = 1
-        private const val REQUEST_CODE_CAMERA_DETAILS = 1
-        private const val REQUEST_CODE_CAMERA_ADD_NEW = 2
 
         val TAG = tag<CamsActivity>()
 
@@ -70,15 +67,12 @@ class CamsActivity : ToolbarActivity(), CamsView {
     }
 
     private fun setupCamsList() {
-        // setup adapter
         mCamsAdapter = CamsListAdapter()
         cams_list.adapter = mCamsAdapter
 
-        // setup layout manager
         val layoutManager = LinearLayoutManager(this)
         cams_list.layoutManager = layoutManager
 
-        // setup line divider
         val dividerItemDecoration = DividerItemDecoration(this, layoutManager.orientation)
         cams_list.addItemDecoration(dividerItemDecoration)
     }
@@ -94,8 +88,7 @@ class CamsActivity : ToolbarActivity(), CamsView {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             MENU_ADD_ITEM -> {
-                val launchIntent = CamDetailActivity.getLaunchIntent(this)
-                startActivityForResult(launchIntent, REQUEST_CODE_CAMERA_ADD_NEW)
+                startActivity(CamDetailActivity.getLaunchIntent(this))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -103,7 +96,6 @@ class CamsActivity : ToolbarActivity(), CamsView {
     }
 
     private fun showList(cams: List<CameraEntity>) {
-        cams_list.visibility = View.VISIBLE
         mCamsAdapter.items = cams
     }
 
@@ -147,7 +139,7 @@ class CamsActivity : ToolbarActivity(), CamsView {
 
             holder.itemView.setOnClickListener {
                 val intent = CamDetailActivity.getLaunchIntent(it.context, items[position])
-                startActivityForResult(intent, REQUEST_CODE_CAMERA_DETAILS)
+                startActivity(intent)
             }
         }
     }
