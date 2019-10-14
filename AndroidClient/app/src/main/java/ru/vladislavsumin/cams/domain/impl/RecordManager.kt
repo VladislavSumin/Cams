@@ -83,6 +83,24 @@ class RecordManager(
 
     override fun observeDatabaseState(): Observable<DatabaseUpdateState> = mUpdateStateObservable
 
+    override fun save(id: Long, name: String?): Single<RecordEntity> {
+        return mApi.save(id, name).flatMap {
+            val entity = it.toEntity()
+            mRepository.observeUpdate(entity)
+                    .onErrorComplete()
+                    .andThen(Single.just(entity))
+        }
+    }
+
+    override fun delete(id: Long): Single<RecordEntity> {
+        return mApi.delete(id).flatMap {
+            val entity = it.toEntity()
+            mRepository.observeUpdate(entity)
+                    .onErrorComplete()
+                    .andThen(Single.just(entity))
+        }
+    }
+
     override fun getRecordUri(record: RecordEntity): Uri = getRecordUri(record.id)
 
     override fun getRecordUri(id: Long): Uri =

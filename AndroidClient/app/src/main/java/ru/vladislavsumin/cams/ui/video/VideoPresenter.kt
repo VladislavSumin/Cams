@@ -2,10 +2,10 @@ package ru.vladislavsumin.cams.ui.video
 
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
-import io.reactivex.Observable
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxkotlin.Flowables
 import io.reactivex.subjects.BehaviorSubject
 import ru.vladislavsumin.cams.app.Injector
 import ru.vladislavsumin.cams.database.combined.RecordWithCamera
@@ -49,24 +49,26 @@ class VideoPresenter : BasePresenter<VideoView>() {
         viewState.playVideo(mRecordManager.getRecordUri(record.record))
     }
 
-    fun observeRecordsToShow(): Observable<List<RecordWithCamera>> {
-        return Observable.combineLatest(
-                mShowOnlySaved,
-                mDateFilter,
-                BiFunction<Boolean, Long, Observable<List<RecordWithCamera>>> { showOnlySaved, dateFilter ->
-                    mRecordManager.observeAllWithCamera().toObservable()
-                            .map { list ->
-                                list.filter {
-                                    if (showOnlySaved && !it.record.keepForever) return@filter false
-                                    if (dateFilter == 0L) return@filter true
-                                    else return@filter it.record.timestamp in dateFilter..(dateFilter + 24 * 60 * 60 * 1000)
-                                }
-                            }
-                    //TODO fix rx chain!
-                }
-        ).flatMap {
-            it.subscribeOn(Schedulers.computation())
-        }
+    fun observeRecordsToShow(): Flowable<List<RecordWithCamera>> {
+        return Flowables.combineLatest(
+                mRecordManager.observeAllWithCamera(),
+                mShowOnlySaved.toFlowable(BackpressureStrategy.LATEST),
+                mDateFilter.toFlowable(BackpressureStrategy.LATEST),
+                this::processRecord
+        ).switchMap { it.subscribeOnComputation() }
+    }
+
+    private fun processRecord(records: List<RecordWithCamera>,
+                              showOnlySaved: Boolean,
+                              dateFilter: Long): Flowable<List<RecordWithCamera>> {
+        return Flowable.create({
+            it.onNext(records.filter {
+                if (showOnlySaved && !it.record.keepForever) return@filter false
+                if (dateFilter == 0L) return@filter true
+                else return@filter it.record.timestamp in dateFilter..(dateFilter + 24 * 60 * 60 * 1000)
+            }.sortedByDescending { it.record.timestamp })
+            it.onComplete()
+        }, BackpressureStrategy.LATEST)
     }
 
     fun onCancelSaveDialog() {
@@ -76,12 +78,11 @@ class VideoPresenter : BasePresenter<VideoView>() {
 
     fun onSaveRecord(id: Long, name: String?) {
         saveDisposable?.dispose()
-        saveDisposable = mRecordsApi.save(id, name)
+        saveDisposable = mRecordManager.save(id, name)
                 .subscribeOnIo()
                 .observeOnMainThread()
                 .subscribe({
                     viewState.dismissSaveVideoDialog()
-//                    viewState.updateSavedRecordListElement(it)//TODO !!!!!!!!!!!!!!!
                 }, {
                     //TODO add simple error logging class
                     Log.d(TAG, "error on save record", it)
@@ -92,14 +93,13 @@ class VideoPresenter : BasePresenter<VideoView>() {
 
     fun onDeleteRecord(id: Long) {
         saveDisposable?.dispose()
-        saveDisposable = mRecordsApi.delete(id)
+        saveDisposable = mRecordManager.delete(id)
                 .subscribeOnIo()
                 .observeOnMainThread()
                 .subscribe({
                     viewState.dismissSaveVideoDialog()
-//                    viewState.updateSavedRecordListElement(it) //TODO !!!!!!!!!!!!!!!!!!
                 }, {
-                    Log.d(TAG, "error on save record", it)
+                    Log.d(TAG, "error on delete record", it)
                     viewState.stopSaveVideoDialogAnimation()
                     viewState.showToast("error")
                 })
