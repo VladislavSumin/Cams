@@ -10,7 +10,6 @@ import io.reactivex.subjects.BehaviorSubject
 import ru.vladislavsumin.cams.app.Injector
 import ru.vladislavsumin.cams.database.combined.RecordWithCamera
 import ru.vladislavsumin.cams.domain.interfaces.RecordManagerI
-import ru.vladislavsumin.cams.network.api.RecordsApiV1
 import ru.vladislavsumin.core.mvp.BasePresenter
 import ru.vladislavsumin.core.utils.*
 import javax.inject.Inject
@@ -20,9 +19,6 @@ class VideoPresenter : BasePresenter<VideoView>() {
     companion object {
         private val TAG = tag<VideoPresenter>()
     }
-
-    @Inject
-    lateinit var mRecordsApi: RecordsApiV1
 
     @Inject
     lateinit var mRecordManager: RecordManagerI
