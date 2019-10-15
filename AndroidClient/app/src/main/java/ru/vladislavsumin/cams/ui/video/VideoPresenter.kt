@@ -57,13 +57,13 @@ class VideoPresenter : BasePresenter<VideoView>() {
     private fun processRecord(records: List<RecordWithCamera>,
                               showOnlySaved: Boolean,
                               dateFilter: Long): Flowable<List<RecordWithCamera>> {
-        return Flowable.create({
-            it.onNext(records.filter {
+        return Flowable.create({ emitter ->
+            emitter.onNext(records.filter {
                 if (showOnlySaved && !it.record.keepForever) return@filter false
                 if (dateFilter == 0L) return@filter true
                 else return@filter it.record.timestamp in dateFilter..(dateFilter + 24 * 60 * 60 * 1000)
             }.sortedByDescending { it.record.timestamp })
-            it.onComplete()
+            emitter.onComplete()
         }, BackpressureStrategy.LATEST)
     }
 

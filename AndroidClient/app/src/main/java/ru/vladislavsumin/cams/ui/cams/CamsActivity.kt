@@ -8,15 +8,13 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_cams.*
 import ru.vladislavsumin.cams.R
-import ru.vladislavsumin.cams.database.DatabaseUpdateState
 import ru.vladislavsumin.cams.database.entity.CameraEntity
-import ru.vladislavsumin.cams.domain.impl.CamsManager
 import ru.vladislavsumin.cams.ui.ListAdapter
 import ru.vladislavsumin.cams.ui.ToolbarActivity
 import ru.vladislavsumin.cams.ui.cams.details.CamDetailActivity
+import ru.vladislavsumin.cams.ui.view.DatabaseUpdateStateSnackbar
 import ru.vladislavsumin.core.utils.observeOnMainThread
 import ru.vladislavsumin.core.utils.tag
 import java.util.concurrent.TimeUnit
@@ -40,7 +38,7 @@ class CamsActivity : ToolbarActivity(), CamsView {
 
     private lateinit var mCamsAdapter: CamsListAdapter
 
-    private var mSnackbar: Snackbar? = null
+    private lateinit var mSnackbar: DatabaseUpdateStateSnackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(LAYOUT)
@@ -50,6 +48,7 @@ class CamsActivity : ToolbarActivity(), CamsView {
     override fun setupUi() {
         super.setupUi()
         setupCamsList()
+        mSnackbar = DatabaseUpdateStateSnackbar(cams_root_view)
     }
 
     override fun setupUx() {
@@ -63,8 +62,10 @@ class CamsActivity : ToolbarActivity(), CamsView {
                 //This need to minimize snackbar blinking
                 .delaySubscription(1, TimeUnit.SECONDS)
                 .observeOnMainThread()
-                .subscribe(this::showDatabaseUpdateState)
+                .subscribe(mSnackbar::showState)
                 .autoDispose()
+
+        mSnackbar.setCallback { mPresenter.updateDatabase() }
     }
 
     private fun setupCamsList() {
@@ -100,38 +101,6 @@ class CamsActivity : ToolbarActivity(), CamsView {
         mCamsAdapter.items = cams
     }
 
-    private fun showDatabaseUpdateState(state: DatabaseUpdateState) {
-        mSnackbar = when (state) {
-            DatabaseUpdateState.UPDATED -> {
-                mSnackbar?.dismiss()
-                null
-            }
-            else -> {
-                makeSnackbar(state)
-            }
-        }
-    }
-
-    private fun makeSnackbar(state: DatabaseUpdateState): Snackbar {
-        val text = when (state) {//TODO move to resources
-            DatabaseUpdateState.UPDATED -> throw RuntimeException("Unsupported state")
-            DatabaseUpdateState.UPDATING -> "Updating database"
-            DatabaseUpdateState.NOT_UPDATED -> "Database not updated"
-            DatabaseUpdateState.ERROR -> "Error on update database"
-        }
-
-        val snackbar = Snackbar.make(cams_root_view, text, Snackbar.LENGTH_INDEFINITE)
-
-        if (state == DatabaseUpdateState.NOT_UPDATED)
-            snackbar.setAction("Update") { mPresenter.updateDatabase() }
-
-        if (state == DatabaseUpdateState.ERROR)
-            snackbar.setAction("Retry") { mPresenter.updateDatabase() }
-
-        //TODO make custom layout
-        snackbar.show()
-        return snackbar
-    }
 
     private inner class CamsListAdapter : ListAdapter<CameraEntity, CamsViewHolder>(CamsViewHolder.Companion) {
 
