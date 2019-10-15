@@ -18,6 +18,7 @@ import ru.vladislavsumin.cams.R
 import ru.vladislavsumin.cams.database.combined.RecordWithCamera
 import ru.vladislavsumin.cams.ui.ListAdapter
 import ru.vladislavsumin.cams.ui.ToolbarActivity
+import ru.vladislavsumin.cams.ui.view.DatabaseUpdateStateSnackbar
 import ru.vladislavsumin.core.utils.observeOnMainThread
 import java.util.*
 
@@ -39,6 +40,8 @@ class VideoActivity : ToolbarActivity(), VideoView {
     private lateinit var mSaveVideoDialog: SaveVideoDialog
 
     private lateinit var adapter: Adapter
+
+    private lateinit var mSnackbar: DatabaseUpdateStateSnackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,11 +65,13 @@ class VideoActivity : ToolbarActivity(), VideoView {
 
         calendar.currentDate = CalendarDay.today()
         calendar.addDecorator(EventDecorator(getColor(R.color.red)))
+
+        mSnackbar = DatabaseUpdateStateSnackbar(records_root_view)
     }
 
     override fun setupUx() {
         super.setupUx()
-        mPresenter.observeRecordsToShow()
+        mPresenter.observeRecords()
                 .map { it.toMutableList() }
                 .observeOnMainThread()
                 .subscribe {
@@ -88,6 +93,13 @@ class VideoActivity : ToolbarActivity(), VideoView {
             calendar.selectedDate = null
             mPresenter.dateFilter = 0
         }
+
+        mPresenter.observeDatabaseStatus()
+                .observeOnMainThread()
+                .subscribe(mSnackbar::showState)
+                .autoDispose()
+
+        mSnackbar.setCallback { mPresenter.updateDatabase() }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

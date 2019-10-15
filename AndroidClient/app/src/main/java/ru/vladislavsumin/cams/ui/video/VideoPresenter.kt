@@ -4,10 +4,12 @@ import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.Flowables
 import io.reactivex.subjects.BehaviorSubject
 import ru.vladislavsumin.cams.app.Injector
+import ru.vladislavsumin.cams.database.DatabaseUpdateState
 import ru.vladislavsumin.cams.database.combined.RecordWithCamera
 import ru.vladislavsumin.cams.domain.interfaces.RecordManagerI
 import ru.vladislavsumin.core.mvp.BasePresenter
@@ -41,11 +43,20 @@ class VideoPresenter : BasePresenter<VideoView>() {
         mRecordManager.fullUpdateDatabaseAsync()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        saveDisposable?.dispose()
+    }
+
+    //***********************************************************************//
+    //                             View actions                              //
+    //***********************************************************************//
+
     fun onSelectRecord(record: RecordWithCamera) {
         viewState.playVideo(mRecordManager.getRecordUri(record.record))
     }
 
-    fun observeRecordsToShow(): Flowable<List<RecordWithCamera>> {
+    fun observeRecords(): Flowable<List<RecordWithCamera>> {
         return Flowables.combineLatest(
                 mRecordManager.observeAllWithCamera(),
                 mShowOnlySaved.toFlowable(BackpressureStrategy.LATEST),
@@ -54,22 +65,17 @@ class VideoPresenter : BasePresenter<VideoView>() {
         ).switchMap { it.subscribeOnComputation() }
     }
 
-    private fun processRecord(records: List<RecordWithCamera>,
-                              showOnlySaved: Boolean,
-                              dateFilter: Long): Flowable<List<RecordWithCamera>> {
-        return Flowable.create({ emitter ->
-            emitter.onNext(records.filter {
-                if (showOnlySaved && !it.record.keepForever) return@filter false
-                if (dateFilter == 0L) return@filter true
-                else return@filter it.record.timestamp in dateFilter..(dateFilter + 24 * 60 * 60 * 1000)
-            }.sortedByDescending { it.record.timestamp })
-            emitter.onComplete()
-        }, BackpressureStrategy.LATEST)
-    }
-
     fun onCancelSaveDialog() {
         saveDisposable?.dispose()
         saveDisposable = null
+    }
+
+    fun observeDatabaseStatus(): Observable<DatabaseUpdateState> {
+        return mRecordManager.observeDatabaseState()
+    }
+
+    fun updateDatabase() {
+        mRecordManager.fullUpdateDatabaseAsync()
     }
 
     fun onSaveRecord(id: Long, name: String?) {
@@ -101,8 +107,21 @@ class VideoPresenter : BasePresenter<VideoView>() {
                 })
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        saveDisposable?.dispose()
+    //***********************************************************************//
+    //                          Support functions                            //
+    //***********************************************************************//
+
+    //TODO переписать фильтр
+    private fun processRecord(records: List<RecordWithCamera>,
+                              showOnlySaved: Boolean,
+                              dateFilter: Long): Flowable<List<RecordWithCamera>> {
+        return Flowable.create({ emitter ->
+            emitter.onNext(records.filter {
+                if (showOnlySaved && !it.record.keepForever) return@filter false
+                if (dateFilter == 0L) return@filter true
+                else return@filter it.record.timestamp in dateFilter..(dateFilter + 24 * 60 * 60 * 1000)
+            }.sortedByDescending { it.record.timestamp })
+            emitter.onComplete()
+        }, BackpressureStrategy.LATEST)
     }
 }

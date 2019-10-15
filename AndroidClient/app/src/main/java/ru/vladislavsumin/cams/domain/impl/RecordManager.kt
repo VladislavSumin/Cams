@@ -14,6 +14,7 @@ import ru.vladislavsumin.cams.database.combined.RecordWithCamera
 import ru.vladislavsumin.cams.database.dao.RecordDao
 import ru.vladislavsumin.cams.database.entity.RecordEntity
 import ru.vladislavsumin.cams.database.entity.toEntity
+import ru.vladislavsumin.cams.domain.interfaces.CamsManagerI
 import ru.vladislavsumin.cams.domain.interfaces.RecordManagerI
 import ru.vladislavsumin.cams.network.api.RecordsApiV2
 import ru.vladislavsumin.cams.storage.CredentialStorage
@@ -26,7 +27,8 @@ import ru.vladislavsumin.core.utils.tag
 class RecordManager(
         private val mRepository: RecordDao,
         private val mApi: RecordsApiV2,
-        private val mCredentialStorage: CredentialStorage
+        private val mCredentialStorage: CredentialStorage,
+        private val mCameraManager: CamsManagerI
 ) : RecordManagerI {
     companion object {
         private val TAG = tag<RecordManager>()
@@ -46,22 +48,27 @@ class RecordManager(
             .share()
             .firstOrError()
 
-    private val mFullUpdateDatabaseCompletable: Completable = Singles.zip(
-            //This tasks run one by one in same thread it is good solution
-            mApiGetAllCompletable,
-            mRepository.getAll()
-    )
-            .subscribeOnIo()
-            .observeOnComputation()
-            .map { SortedListDiff.calculateDif(it.second, it.first, RecordEntity.Companion) }
-            .observeOnIo()
-            .map(this::dispatchChanges)
-            .toObservable()
-            .doOnSubscribe { mUpdateStateObservable.onNext(DatabaseUpdateState.UPDATING) }
-            .doOnComplete { mUpdateStateObservable.onNext(DatabaseUpdateState.UPDATED) }
-            .doOnError { mUpdateStateObservable.onNext(DatabaseUpdateState.ERROR) }
-            .share()
-            .ignoreElements()
+    private val mFullUpdateDatabaseCompletable: Completable =
+            mCameraManager.observeFullUpdateDatabase()
+                    .andThen(
+                            Singles.zip(
+                                    //This tasks run one by one in same thread it is good solution
+                                    mApiGetAllCompletable,
+                                    mRepository.getAll()
+                            )
+
+                    )
+                    .subscribeOnIo()
+                    .observeOnComputation()
+                    .map { SortedListDiff.calculateDif(it.second, it.first, RecordEntity.Companion) }
+                    .observeOnIo()
+                    .map(this::dispatchChanges)
+                    .toObservable()
+                    .doOnSubscribe { mUpdateStateObservable.onNext(DatabaseUpdateState.UPDATING) }
+                    .doOnComplete { mUpdateStateObservable.onNext(DatabaseUpdateState.UPDATED) }
+                    .doOnError { mUpdateStateObservable.onNext(DatabaseUpdateState.ERROR) }
+                    .share()
+                    .ignoreElements()
 
     private val mUpdateStateObservable = BehaviorSubject.createDefault(DatabaseUpdateState.NOT_UPDATED)
 

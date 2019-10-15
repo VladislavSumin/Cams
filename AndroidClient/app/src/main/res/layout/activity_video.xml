@@ -2,6 +2,7 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/records_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:openDrawer="end">
@@ -44,24 +45,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:mcv_showOtherDates="all"
             app:mcv_selectionColor="#00F"
-            />
+            app:mcv_showOtherDates="all" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkbox_only_saved"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/calendar"
-            android:text="@string/only_saved" />
+            android:text="@string/only_saved"
+            app:layout_constraintTop_toBottomOf="@id/calendar" />
 
         <fragment
             android:id="@+id/fragment_cams_filter"
+            class="ru.vladislavsumin.cams.ui.video.filters.cams.CamsFilterFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/checkbox_only_saved"
             app:layout_constraintBottom_toTopOf="@id/button_clear_date_filter"
-            class="ru.vladislavsumin.cams.ui.video.filters.cams.CamsFilterFragment"
+            app:layout_constraintTop_toBottomOf="@id/checkbox_only_saved"
             tools:layout="@layout/fragment_cams_filter" />
 
         <Button
@@ -70,8 +70,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="70dp"
             android:layout_marginRight="70dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="@string/clear_all_filters" />
+            android:text="@string/clear_all_filters"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

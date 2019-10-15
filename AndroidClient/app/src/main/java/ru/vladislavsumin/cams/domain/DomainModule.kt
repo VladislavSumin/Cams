@@ -49,7 +49,8 @@ class DomainModule {
     @Provides
     @Singleton
     fun provideRecordManager(recordDao: RecordDao, recordsApi: RecordsApiV2,
-                             credentialStorage: CredentialStorage): RecordManagerI {
-        return RecordManager(recordDao, recordsApi, credentialStorage)
+                             credentialStorage: CredentialStorage,
+                             cameraManager: CamsManagerI): RecordManagerI {
+        return RecordManager(recordDao, recordsApi, credentialStorage, cameraManager)
     }
 }
