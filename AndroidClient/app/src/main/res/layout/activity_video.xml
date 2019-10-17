@@ -38,6 +38,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@android:color/white"
+        android:clickable="true"
+        android:focusable="true"
         android:orientation="vertical">
 
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -62,6 +64,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/button_clear_date_filter"
             app:layout_constraintTop_toBottomOf="@id/checkbox_only_saved"
+            app:layout_constraintVertical_bias="0"
             tools:layout="@layout/fragment_cams_filter" />
 
         <Button

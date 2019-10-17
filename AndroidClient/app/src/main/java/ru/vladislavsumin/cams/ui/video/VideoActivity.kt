@@ -18,6 +18,7 @@ import ru.vladislavsumin.cams.R
 import ru.vladislavsumin.cams.database.combined.RecordWithCamera
 import ru.vladislavsumin.cams.ui.ListAdapter
 import ru.vladislavsumin.cams.ui.ToolbarActivity
+import ru.vladislavsumin.cams.ui.video.filters.cams.CamsFilterFragment
 import ru.vladislavsumin.cams.ui.view.DatabaseUpdateStateSnackbar
 import ru.vladislavsumin.core.utils.observeOnMainThread
 import java.util.*
@@ -43,6 +44,8 @@ class VideoActivity : ToolbarActivity(), VideoView {
 
     private lateinit var mSnackbar: DatabaseUpdateStateSnackbar
 
+    private lateinit var mCamsFilter: CamsFilterFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(LAYOUT)
@@ -67,6 +70,8 @@ class VideoActivity : ToolbarActivity(), VideoView {
         calendar.addDecorator(EventDecorator(getColor(R.color.red)))
 
         mSnackbar = DatabaseUpdateStateSnackbar(records_root_view)
+
+        mCamsFilter = supportFragmentManager.findFragmentById(R.id.fragment_cams_filter) as CamsFilterFragment
     }
 
     override fun setupUx() {
@@ -100,6 +105,13 @@ class VideoActivity : ToolbarActivity(), VideoView {
                 .autoDispose()
 
         mSnackbar.setCallback { mPresenter.updateDatabase() }
+
+        mPresenter.observeCams()
+                .observeOnMainThread()
+                .subscribe(mCamsFilter::setCams)
+                .autoDispose()
+
+        mCamsFilter.setCallback { mPresenter.camsFilter = it }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

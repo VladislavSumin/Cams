@@ -11,6 +11,8 @@ import io.reactivex.subjects.BehaviorSubject
 import ru.vladislavsumin.cams.app.Injector
 import ru.vladislavsumin.cams.database.DatabaseUpdateState
 import ru.vladislavsumin.cams.database.combined.RecordWithCamera
+import ru.vladislavsumin.cams.database.entity.CameraEntity
+import ru.vladislavsumin.cams.domain.interfaces.CamsManagerI
 import ru.vladislavsumin.cams.domain.interfaces.RecordManagerI
 import ru.vladislavsumin.core.mvp.BasePresenter
 import ru.vladislavsumin.core.utils.*
@@ -25,13 +27,18 @@ class VideoPresenter : BasePresenter<VideoView>() {
     @Inject
     lateinit var mRecordManager: RecordManagerI
 
+    @Inject
+    lateinit var mCamsManager: CamsManagerI
+
     private var saveDisposable: Disposable? = null
 
     private val mShowOnlySaved = BehaviorSubject.createDefault(false)
     private val mDateFilter = BehaviorSubject.createDefault(0L)
+    private val mCamsFilter = BehaviorSubject.createDefault(emptyList<CameraEntity>())
 
     var showOnlySaved: Boolean by mShowOnlySaved.delegate()
     var dateFilter: Long by mDateFilter.delegate()
+    var camsFilter: List<CameraEntity> by mCamsFilter.delegate()
 
 
     init {
@@ -61,6 +68,7 @@ class VideoPresenter : BasePresenter<VideoView>() {
                 mRecordManager.observeAllWithCamera(),
                 mShowOnlySaved.toFlowable(BackpressureStrategy.LATEST),
                 mDateFilter.toFlowable(BackpressureStrategy.LATEST),
+                mCamsFilter.toFlowable(BackpressureStrategy.LATEST),
                 this::processRecord
         ).switchMap { it.subscribeOnComputation() }
     }
@@ -107,20 +115,41 @@ class VideoPresenter : BasePresenter<VideoView>() {
                 })
     }
 
+    fun observeCams(): Flowable<List<CameraEntity>> {
+        return mCamsManager.observeAll()
+                .subscribeOnIo()
+                .observeOnComputation()
+                .map { list ->
+                    list
+                            .filter { !it.deleted }
+                            .sortedBy { it.name }
+                }
+    }
+
     //***********************************************************************//
     //                          Support functions                            //
     //***********************************************************************//
 
-    //TODO переписать фильтр
     private fun processRecord(records: List<RecordWithCamera>,
                               showOnlySaved: Boolean,
-                              dateFilter: Long): Flowable<List<RecordWithCamera>> {
+                              dateFilter: Long,
+                              camsFilter: List<CameraEntity>): Flowable<List<RecordWithCamera>> {
         return Flowable.create({ emitter ->
-            emitter.onNext(records.filter {
-                if (showOnlySaved && !it.record.keepForever) return@filter false
-                if (dateFilter == 0L) return@filter true
-                else return@filter it.record.timestamp in dateFilter..(dateFilter + 24 * 60 * 60 * 1000)
-            }.sortedByDescending { it.record.timestamp })
+            emitter.onNext(
+                    records.asSequence()
+                            .filter { !showOnlySaved || it.record.keepForever }
+                            .filter {
+                                if (dateFilter == 0L) true
+                                else it.record.timestamp in
+                                        dateFilter..(dateFilter + 24 * 60 * 60 * 1000)
+                            }
+                            .filter {
+                                if (camsFilter.isEmpty()) true
+                                else camsFilter.contains(it.camera)
+                            }
+                            .sortedByDescending { it.record.timestamp }
+                            .toList()
+            )
             emitter.onComplete()
         }, BackpressureStrategy.LATEST)
     }
