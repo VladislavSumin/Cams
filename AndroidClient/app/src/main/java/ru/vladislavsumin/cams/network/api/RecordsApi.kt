@@ -5,9 +5,8 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 import ru.vladislavsumin.cams.dto.RecordDto
-import ru.vladislavsumin.cams.entity.Record
 
-interface RecordsApiV2 {
+interface RecordsApi {
     @GET("api/v2/records")
     fun getAll(): Single<List<RecordDto>>
 

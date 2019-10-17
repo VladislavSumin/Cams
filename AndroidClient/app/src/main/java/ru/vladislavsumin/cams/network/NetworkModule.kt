@@ -4,8 +4,7 @@ import dagger.Module
 import dagger.Provides
 import ru.vladislavsumin.cams.network.api.AboutApi
 import ru.vladislavsumin.cams.network.api.CamsApi
-import ru.vladislavsumin.cams.network.api.RecordsApiV1
-import ru.vladislavsumin.cams.network.api.RecordsApiV2
+import ru.vladislavsumin.cams.network.api.RecordsApi
 import javax.inject.Singleton
 
 @Module
@@ -24,14 +23,8 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRecordsApiV1(networkService: NetworkService): RecordsApiV1 {
-        return networkService.create(RecordsApiV1::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideRecordsApiV2(networkService: NetworkService): RecordsApiV2 {
-        return networkService.create(RecordsApiV2::class.java)
+    fun provideRecordsApiV2(networkService: NetworkService): RecordsApi {
+        return networkService.create(RecordsApi::class.java)
     }
 
     @Provides

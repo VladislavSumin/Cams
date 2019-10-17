@@ -16,7 +16,7 @@ import ru.vladislavsumin.cams.database.entity.RecordEntity
 import ru.vladislavsumin.cams.database.entity.toEntity
 import ru.vladislavsumin.cams.domain.interfaces.CamsManagerI
 import ru.vladislavsumin.cams.domain.interfaces.RecordManagerI
-import ru.vladislavsumin.cams.network.api.RecordsApiV2
+import ru.vladislavsumin.cams.network.api.RecordsApi
 import ru.vladislavsumin.cams.storage.CredentialStorage
 import ru.vladislavsumin.cams.utils.SortedListDiff
 import ru.vladislavsumin.core.utils.observeOnComputation
@@ -26,7 +26,7 @@ import ru.vladislavsumin.core.utils.tag
 
 class RecordManager(
         private val mRepository: RecordDao,
-        private val mApi: RecordsApiV2,
+        private val mApi: RecordsApi,
         private val mCredentialStorage: CredentialStorage,
         private val mCameraManager: CamsManagerI
 ) : RecordManagerI {
