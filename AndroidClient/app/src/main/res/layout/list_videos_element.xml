@@ -55,7 +55,8 @@
             tools:text="100s"
             android:id="@+id/text_duration"
             android:layout_width="wrap_content"
-            android:paddingEnd="4dp"
+            android:textColor="#0EB0C1"
+            android:paddingEnd="8dp"
             android:textSize="18sp"
             android:layout_height="wrap_content"/>
 
