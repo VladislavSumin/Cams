@@ -1,55 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:padding="5dp"
-              android:paddingStart="15dp"
-              android:paddingEnd="15dp"
-              android:focusable="true"
-              android:clickable="true"
-              android:foreground="?android:attr/selectableItemBackground">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp">
 
     <!--TODO remove UseCompoundDrawables-->
     <LinearLayout
-            android:id="@+id/save_layout"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
+        android:id="@+id/save_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:ignore="UseCompoundDrawables"
+        tools:visibility="visible">
 
-        <TextView android:layout_width="0dp"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/record_name"
-                  tools:text="Custom video name"
-                  android:layout_weight="1"
-                  android:textSize="22sp"/>
-        <ImageView android:id="@+id/ic_saved"
-                   android:layout_width="wrap_content"
-                   android:layout_height="match_parent"
-                   android:src="@drawable/ic_save"
-                   tools:ignore="ContentDescription"/>
+        <TextView
+            android:id="@+id/record_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="22sp"
+            tools:text="Custom video name" />
+
+        <ImageView
+            android:id="@+id/ic_saved"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_save"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-        <TextView android:id="@+id/text_name"
-                  android:layout_width="0dp"
-                  android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                  tools:text="Cam Name"
-                  android:textSize="22sp"
-                  tools:textSize="20sp"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <TextView android:id="@+id/text_date"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:textSize="18sp"
-                  tools:text="13:08:56 20.03.2018"/>
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="22sp"
+            tools:text="Cam Name"
+            tools:textSize="20sp" />
+
+        <TextView
+            tools:text="100s"
+            android:id="@+id/text_duration"
+            android:layout_width="wrap_content"
+            android:paddingEnd="4dp"
+            android:textSize="18sp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/text_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            tools:text="13:08:56 20.03.2018" />
 
     </LinearLayout>
 

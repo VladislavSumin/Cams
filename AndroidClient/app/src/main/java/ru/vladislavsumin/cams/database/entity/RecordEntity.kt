@@ -28,6 +28,7 @@ data class RecordEntity(
         val name: String? = null,
         val timestamp: Long = 0L,
         val fileSize: Long = 0L,
+        val duration: Double? = null,
         val keepForever: Boolean = false,
 
         @ColumnInfo(name = "camera_id")
@@ -50,6 +51,7 @@ fun RecordDto.toEntity(): RecordEntity {
             id = this.id,
             name = this.name,
             timestamp = this.timestamp,
+            duration = this.duration,
             fileSize = this.fileSize,
             keepForever = this.keepForever,
             cameraId = this.cameraId

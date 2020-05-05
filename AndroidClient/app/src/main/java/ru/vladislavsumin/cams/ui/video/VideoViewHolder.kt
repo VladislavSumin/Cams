@@ -27,6 +27,7 @@ class VideoViewHolder private constructor(itemView: View) : RWBaseViewHolder<Rec
 
     private val cameraName: TextView = itemView.findViewById(R.id.text_name)
     private val date: TextView = itemView.findViewById(R.id.text_date)
+    private val duration: TextView = itemView.findViewById(R.id.text_duration)
     private val recordName: TextView = itemView.findViewById(R.id.record_name)
     private val iconSaved: ImageView = itemView.findViewById(R.id.ic_saved)
     private val saveLayout: LinearLayout = itemView.findViewById(R.id.save_layout)
@@ -44,6 +45,12 @@ class VideoViewHolder private constructor(itemView: View) : RWBaseViewHolder<Rec
         iconSaved.visibility = if (item.record.keepForever) View.VISIBLE else View.GONE
 
         recordName.text = item.record.name ?: "<no name>"
+
+        val duration = item.record.duration
+
+        this.duration.text = if (duration != null) {
+            "%.0fs".format(duration)
+        } else ""
 
         val textColor = if (item.record.name != null) R.color.black else R.color.grey
         recordName.setTextColor(recordName.context.getColor(textColor))
