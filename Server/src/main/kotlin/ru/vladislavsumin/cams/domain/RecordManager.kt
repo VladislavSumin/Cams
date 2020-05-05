@@ -17,6 +17,7 @@ import java.util.*
 @Service
 class RecordManager @Autowired constructor(
         private val recordRepository: RecordRepository,
+        private val encoderService: VideoEncoderService,
         @Value("\${pRecordPath}") private val rootPath: String
 ) {
     companion object {
@@ -30,9 +31,12 @@ class RecordManager @Autowired constructor(
 
     fun add(record: Path, camera: CameraEntity, timestamp: Long) {
         val size = record.toFile().length()
+        val duration = encoderService.getDuration(record)
+        logger.info("New record duration: $duration")
         val record1 = RecordEntity(
                 timestamp = timestamp,
                 fileSize = size,
+                duration = duration,
                 camera = camera
         )
         val save = recordRepository.save(record1)

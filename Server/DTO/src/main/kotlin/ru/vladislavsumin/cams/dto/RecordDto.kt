@@ -5,6 +5,7 @@ data class RecordDto(
         val name: String? = null,
         val timestamp: Long = 0L,
         val fileSize: Long = 0L,
+        val duration: Double? = null,
         val keepForever: Boolean = false,
         val cameraId: Long? = null
 )

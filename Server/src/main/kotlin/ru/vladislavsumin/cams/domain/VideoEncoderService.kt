@@ -19,10 +19,11 @@ import java.nio.file.Path
 @Service
 class VideoEncoderService @Autowired constructor(@Value("\${pFfmpegPath}") path: String) {
     private val executor: FFmpegExecutor
+    private val ffprobe: FFprobe
 
     init {
         val ffmpeg = FFmpeg(path + "ffmpeg")
-        val ffprobe = FFprobe(path + "ffprobe")
+        ffprobe = FFprobe(path + "ffprobe")
         executor = FFmpegExecutor(ffmpeg, ffprobe)
     }
 
@@ -34,13 +35,18 @@ class VideoEncoderService @Autowired constructor(@Value("\${pFfmpegPath}") path:
      */
     fun encode(input: Path, output: Path) {
         val builder = FFmpegBuilder()
-            .setVerbosity(FFmpegBuilder.Verbosity.QUIET)
-            .setInput(input.toAbsolutePath().toString())
-            .addOutput(output.toAbsolutePath().toString())
-            .setVideoFrameRate(24, 1)
-            .addExtraArgs("-c", "copy")
-            .done()
+                .setVerbosity(FFmpegBuilder.Verbosity.QUIET)
+                .setInput(input.toAbsolutePath().toString())
+                .addOutput(output.toAbsolutePath().toString())
+                .setVideoFrameRate(24, 1)
+                .addExtraArgs("-c", "copy")
+                .done()
 
         executor.createJob(builder).run()
+    }
+
+    fun getDuration(file: Path): Double {
+        return ffprobe.probe(file.toAbsolutePath().toString())
+                .getFormat().duration
     }
 }
