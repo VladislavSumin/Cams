@@ -8,7 +8,7 @@ buildscript {
 
     }
     dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.3.50"))
+        classpath(kotlin("gradle-plugin", version = "1.3.72"))
     }
 }
 
@@ -20,14 +20,14 @@ repositories {
 
 plugins {
     java
-    id("org.jetbrains.kotlin.jvm") version "1.3.50"
-    id("org.springframework.boot") version "2.1.8.RELEASE"
+    id("org.jetbrains.kotlin.jvm") version "1.3.72"
+    id("org.springframework.boot") version "2.2.6.RELEASE"
 
     /**
      * Check plugin && library versions
      * Use task "dependencyUpdates" to check updates
      */
-    id("com.github.ben-manes.versions") version ("0.25.0")
+    id("com.github.ben-manes.versions") version ("0.28.0")
 }
 
 configure<JavaPluginConvention> {
@@ -49,25 +49,23 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(project(":DTO"))
 
-    implementation(files("./../../NioSocketListener/build/libs/NioSocketListener.jar"))
-
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-freemarker")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.10")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0")
 
     //Database
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    runtime("com.h2database:h2:1.4.199")
+    runtimeOnly("com.h2database:h2:1.4.200")
 
     //Gson
-    implementation("com.google.code.gson:gson:2.8.5")
+    implementation("com.google.code.gson:gson:2.8.6")
 
     //FFMPEG
     implementation("net.bramp.ffmpeg:ffmpeg:0.6.2")
 
-    testCompile("junit", "junit", "4.12")
+    testImplementation("junit", "junit", "4.13")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
