@@ -13,6 +13,9 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+  freemarker:
+    template-loader-path: classpath:/templates
+    suffix: .ftl
 
 #  logging.level.ru.vladislavsumin.cams=debug
 logging:
