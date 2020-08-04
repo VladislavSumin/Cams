@@ -8,7 +8,7 @@ import ru.vladislavsumin.cams.utils.ConfigVerifierUtils
 
 @SpringBootApplication
 @EnableScheduling //TODO move to config
-@EnableWebMvc
+//@EnableWebMvc
 open class Main
 
 fun main(args: Array<String>) {
